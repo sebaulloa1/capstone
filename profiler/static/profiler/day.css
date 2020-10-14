@@ -1,0 +1,34 @@
+.day-date {
+    width: 25%;
+    height: 7rem;
+    font-size: 3rem;
+    box-shadow: inset 10px 0px 17px -5px var(--red);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.day-date div {
+    color: black;
+}
+
+.add-ingredient-form {
+        width: 45%;
+
+}
+
+.add-ingredient-form h2 {
+    color: black;
+}
+
+.ingredient-input {
+    width: 15rem;
+}
+
+.measures-input {
+    width: 5rem;
+}
+
+.quantity-input {
+    width: 3rem;
+}

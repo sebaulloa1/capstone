@@ -1,0 +1,31 @@
+const form_template = `
+    <div>
+        <label for="ingredient">Ingredient:</label>
+        <input required class="ingredient-input" type="text" name="ingredient">
+        <label for="measures">Measure:</label>
+        <select class="measures-input" name="measures">
+            <optgroup label="By weight">
+                <option value="kg">Kilograms (kg)</option>
+                <option value="g">Grams (g)</option>
+                <option value="mg">Miligrams (mg)</option>
+            </optgroup>
+            <optgroup label="By volume">
+                <option value="l">Liters (l)</option>
+                <option value="ml">Mililiters (ml)</option>
+            </optgroup>
+            <optgroup label="Kitchenware">
+                <option value="cup">Cups</option>
+                <option value="tbsp">Tablespoons (tbsp)</option>
+                <option value="tsp">Teaspoons (tsp)</option>
+            </optgroup>
+            <optgroup label="Size">
+                <option value="large">Large</option>
+                <option value="medium">Medium</option>
+                <option value="small">Small</option>
+            </optgroup>
+            <option value="">Quantity</option>
+        </select>
+        <label for="quantity">Quantity: </label>
+        <input required class="quantity-input" type="number" name="quantity">
+    </div>
+    `;

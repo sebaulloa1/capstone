@@ -1,0 +1,19 @@
+{% extends "profiler/layout.html" %}
+{% load static %}
+{% block body %}
+    <div class="day-date">
+        <div>{{ date | date:"l j F, Y" }}</div>
+    </div>
+    <div id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
+    <button class="add-meal-btn" data-meals="breakfast">Add a breakfast</button>
+    <button class="add-meal-btn" data-meals="lunch">Add a lunch</button>
+    <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
+    <button class="add-meal-btn" data-meals="snack">Add a snack</button>
+
+
+    <div class="add-meal-form-container">
+    </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'profiler/forms.js' %}"></script>
+{% endblock %}
