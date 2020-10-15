@@ -36,11 +36,18 @@ def new_meal(request):
         meal_time = data['meal_time'].capitalize()
         date = datetime.datetime.fromisoformat(data['date'])
         print(data)
-        for ingredient in data['meal']:
-            meal = globals()[meal_time](date=date.strftime('%Y-%m-%d'), ingredient=ingredient['name'], measure=ingredient['measure'], quantity=ingredient['qty'])
-            meal.save()
-            print(ingredient)
+        #for ingredient in data['meal']:
+        #    meal = globals()[meal_time](date=date.strftime('%Y-%m-%d'), ingredient=ingredient['name'], measure=ingredient['measure'], quantity=ingredient['qty'])
+         #   meal.save()
+            #print(ingredient)
         
+        params = {'app_id': 'e572f575', 'app_key': '5e459acdcb817d770ab8212e966bdfb6'}
+        for ingredient in data['meal']:
+            food = {'ingredients': [{'quantity': int(ingredient['qty']), 'measure': ingredient['measure'], 'foodId': ingredient['id']}]}
+            print(food)
+            r = requests.post('https://api.edamam.com/api/food-database/v2/nutrients', params=params, json=food)
+            print(r.json())
+       
         return HttpResponse()
 
 def nutrition_api(request, date):

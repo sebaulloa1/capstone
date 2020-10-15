@@ -97,14 +97,21 @@ function measuresAPI(input) {
     .then(response => response.json())
     .then(result => {
         console.log(result);
-        console.log(input)
+        console.log(input.value)
         input.parentElement.querySelector('.measures-input').disabled = false;
-        for (var i = 0; i < result['hints'][0]['measures'].length; i++) {
-            var option = document.createElement("option");
-            option.value = result['hints'][0]['measures'][i]['uri'];
-            option.text = result['hints'][0]['measures'][i]['label'];
-            input.parentElement.querySelector('.measures-input').appendChild(option);
+        for (var x = 0; x < result['hints'].length; x++) {
+            if (result['hints'][x]['food']['label'].localeCompare(input.value, undefined, {sensitivity: 'base'}) === 0) {
+                for (var i = 0; i < result['hints'][x]['measures'].length; i++) {
+                    var option = document.createElement("option");
+                    option.value = result['hints'][x]['measures'][i]['uri'];
+                    option.text = result['hints'][x]['measures'][i]['label'];
+                    input.parentElement.querySelector('.measures-input').appendChild(option);
+                }
+                input.dataset.ingr_id = result['hints'][x]['food']['foodId'];
+                break
+            }
         }
-        input.dataset.ingr_id = result['hints'][0]['food']['foodId'];
+        
     })
 }
+
