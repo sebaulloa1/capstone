@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import datetime
 from django import forms
 import json
@@ -8,6 +8,19 @@ from .models import Breakfast, Lunch, Dinner, Snack, Calendar
 import requests
 from django.core.exceptions import ObjectDoesNotExist
 from decimal import Decimal
+from django.urls import reverse
+
+def get_token():
+    data = {"grant_type": "client_credentials", "scope": "basic"}
+    clientID = '8afd07b7355c41e3813a80e3008c127e'
+    clientSecret = 'b17853e36e824b26aa0c18867e114d45'
+    r = requests.post('https://oauth.fatsecret.com/connect/token', data=data, auth=(clientID, clientSecret))
+    print(r)
+    print(r.json())
+    r = r.json()
+    return r['access_token']
+
+token = get_token()
 
 def calendar(request):
     return render(request, "profiler/calendar.html")
@@ -15,8 +28,18 @@ def calendar(request):
 def day(request, date):
     date = datetime.datetime.fromtimestamp(date)
     print(date)
-    parse_checker(date)
-    nutrition_api(request, date)
+    #parse_checker(date)
+    #nutrition_api(request, date)
+    """
+    params = {'method': 'recipes.search', 'format': 'json', 'search_expression': 'bacon cheese burger'}
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjEzRTFGRDgwMTQ0Q0IwQTI4NDRFMzI4REZCNUU4NTQyRDE0QUI2RUYiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJFLUg5Z0JSTXNLS0VUaktOLTE2RlF0Rkt0dTgifQ.eyJuYmYiOjE2MDI5OTI0MDAsImV4cCI6MTYwMzA3ODgwMCwiaXNzIjoiaHR0cHM6Ly9vYXV0aC5mYXRzZWNyZXQuY29tIiwiYXVkIjoiYmFzaWMiLCJjbGllbnRfaWQiOiI4YWZkMDdiNzM1NWM0MWUzODEzYTgwZTMwMDhjMTI3ZSIsInNjb3BlIjpbImJhc2ljIl19.ClvCUYzSNJx5ubEPATG7ZtkRZcss_QPeV44msnSG3rW7fE70JBdYnMcDGxaNjLEfPogQqMDnNGwCqKrHbw8onFY3nRCBHpc1ydS_DoNkMwgXab1AmzktyVHiuS1lnwhs-tlegCdHRsWjufFQsHoXfR09LgdndGeQ0QljxZ5mE5vUcnuE3UvkMN2N0jjcOYwYLu5okPst4hFuHz5MnCVZNpFIGVR0E_4E-fBHpcPBuqpG8Obv8UwcGqcL7EFS4M2o0k2mZy3LdmilHSFtHSJ1AR2W0CSj2Upm9PHkgwK4ieegMSuprDM9rYmgP7eQh39o9sNGvyJjITKaC6bOREuC_A'}
+    r = requests.post('https://platform.fatsecret.com/rest/server.api', params=params, headers=headers)
+    print(r.url)
+    print(r.headers)
+    print(r.json())
+    with open("test.json", "w") as f:
+        json.dump(r.json(), f, indent=4)
+    """
     return render(request, "profiler/day.html", {
         "date": date
     })
@@ -24,7 +47,7 @@ def day(request, date):
 def today(request):
     date = datetime.datetime.today()
     print(date)
-    food_parser()
+    #food_parser()
     return render(request, "profiler/day.html", {
         "date": date
     })
@@ -79,7 +102,7 @@ def nutrition_api(request, date):
     r = requests.post('https://api.edamam.com/api/nutrition-details', params=params,json=recipe)
     print(r.url)
     print(r.json(), "json")
-
+    """
     # If got a response with the nutrients
     if r.ok:
         for meal in breakfast:
@@ -115,7 +138,7 @@ def nutrition_api(request, date):
                         fat_sat=nutrients['totalNutrients']['FASAT']['quantity'], fat_trans=nutrients['totalNutrients']['FATRN']['quantity'], sugar=nutrients['totalNutrients']['SUGAR']['quantity'],
                         carb=nutrients['totalNutrients']['CHOCDF']['quantity'], fiber=nutrients['totalNutrients']['FIBTG']['quantity'])
         day_nutrition.save()
-
+    """
     return r.json()
 
 # For checking if that day (date) meals have been added in the total nutrients 
@@ -153,7 +176,40 @@ def food_parser():
     params = {'ingr': 'bacon', 'app_id': 'e572f575', 'app_key': '5e459acdcb817d770ab8212e966bdfb6'}
     r = requests.get('https://api.edamam.com/api/food-database/v2/parser', params=params)
     print(r.json())
-    return r.json()
+    return 
 
 def test(request):
     return render(request, 'profiler/test.html')
+
+
+
+@csrf_exempt
+def fatSecretSearch(request, food_name, page_num):
+    if request.method == 'POST':   
+        #try:    
+        params = {'method': 'foods.search', 'format': 'json', 'search_expression': f'{food_name}', 'page_number': f'{page_num}', 'max_results': '10'}
+        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {token}'}
+        r = requests.post('https://platform.fatsecret.com/rest/server.api', params=params, headers=headers)
+        print(r.url)
+        print(r.headers)
+        print(r.json())
+        r = r.json()
+        return JsonResponse({
+            'results': r
+            })
+        #except:
+        #    token = get_token()
+        #    return HttpResponseRedirect(reverse('foods_search', args=(food_name, page_num)))
+
+@csrf_exempt
+def fatSecretGet(request, id):
+    if request.method == 'POST':
+        params = {'method': 'food.get.v2', 'food_id': f'{id}', 'format': 'json'}
+        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {token}'}
+        r = requests.post('https://platform.fatsecret.com/rest/server.api', params=params, headers=headers)
+        print(r)
+        r = r.json()
+        print(r)
+        return JsonResponse({
+            'food': r
+        })

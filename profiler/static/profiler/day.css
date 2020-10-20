@@ -32,3 +32,30 @@
 .quantity-input {
     width: 3rem;
 }
+
+#food-search-container {
+    width: 40%;
+    border: 1px solid black;
+}
+
+#nutrition-panel {
+    display: grid;
+    grid-template-rows: 2fr 3fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "left right";
+    width: 100%;
+    margin: 0 10px;
+}
+
+.panel-left {
+    grid-area: left;
+}
+
+.panel-left table {
+    border: 1px solid gray;
+
+}
+
+.panel-right {
+    grid-area: right;
+}

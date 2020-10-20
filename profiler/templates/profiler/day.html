@@ -10,10 +10,32 @@
     <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
     <button class="add-meal-btn" data-meals="snack">Add a snack</button>
 
-
     <div class="add-meal-form-container">
     </div>
+
+    <div>
+        <ul>
+            <li>Protein: </li>
+            <li>Fat: </li>
+            <li>Carbohydrates: </li>
+            <li>Calories: </li>
+            <li>Fiber: </li>
+            
+        </ul>
+    </div>
+    
+    <script src="https://platform.fatsecret.com/js?key=8afd07b7355c41e3813a80e3008c127e&auto_load=true"></script>
+
+    <div id="food-search-container">
+        <h2>Food Search:</h2>
+        <form>
+            <input type="text" id="food-search-name">
+            <input type="button" value="Search" id="food-search">
+        </form>
+    </div>
+
+    
 {% endblock %}
 {% block script %}
-<script src="{% static 'profiler/forms.js' %}"></script>
+<script src="{% static 'profiler/day.js' %}"></script>
 {% endblock %}
