@@ -1,3 +1,11 @@
+body {
+    font-size: 1.5rem;
+}
+
+div {
+    display: block;
+}
+
 .day-date {
     width: 25%;
     height: 7rem;
@@ -34,28 +42,88 @@
 }
 
 #food-search-container {
-    width: 40%;
+    width: 80%;
     border: 1px solid black;
 }
 
 #nutrition-panel {
     display: grid;
-    grid-template-rows: 2fr 3fr;
-    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-columns: 2fr 3fr;
     grid-template-areas: "left right";
-    width: 100%;
-    margin: 0 10px;
+    width: 95%;
+    margin: 10px auto;
+
 }
 
 .panel-left {
     grid-area: left;
 }
 
-.panel-left table {
-    border: 1px solid gray;
+.nutrition-table {
+    border: 2px solid #BCBCBC;
+    width: 100%;
+    font-family: Arial;
+    color: black;
+}
 
+.nutrition-table table {
+    border-collapse: collapse;
+    width: 95%;
+    margin: 0 auto;
+    font-size: 1.2rem;
+}
+
+.nutrition-facts {
+    font-size: 150%;
+    font-weight: 700;
+    line-height: 25px;
+    letter-spacing: 1px;
+}
+
+.table-separator {
+    height: 5px;
+    background-color: #888;
+}
+
+.ammount-per-serving {
+    font-weight: 700;
+    font-size: 80%;
+}
+
+.nutrition-panel-macro {
+    font-weight: 700;
+}
+
+.table-bottom-border {
+    border-bottom: 1px solid gray;
+    border-collapse: collapse;
+}
+
+.table-nutrient-value {
+    text-align: right;
+}
+
+#foods-search-table {
+    border: 1px solid gray;
+    padding: 3px;
+    width: 100%;
 }
 
 .panel-right {
     grid-area: right;
+    padding-left: 10px;
+}
+
+.servings-heading {
+    font-weight: 700;
+}
+
+.serving-selector {
+    margin: 5px;
+}
+
+.panel-right ul {
+    margin: 0;
+    padding-left: 2.5%;
 }

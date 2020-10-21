@@ -243,96 +243,94 @@ function makeNutritionPanel(json, serving) {
     const nutrition_panel = document.createElement('div');
     nutrition_panel.id = 'nutrition-panel';
     nutrition_panel.innerHTML = `
-    <div id="nutrition-panel">
-        <div class="panel-left">
-            <table>
-                <tbody>
-                    <tr>
-                        <td colspan="3">
-                            <span class="nutrition-facts">Nutrition Facts</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <span class="serving-size">${food['servings']['serving'][serving]['measurement_description']}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">Amount per serving</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Calories</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['calories']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Total Fat</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['fat']}</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">Saturated Fat</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['saturated_fat']}</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">Polyunsaturated Fat</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['polyunsaturated_fat']}</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">Monounsaturated Fat</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['monounsaturated_fat']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Cholesterol</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['cholesterol']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Sodium</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['sodium']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Potassium</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['potassium']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Total Carbohydrate</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['carbohydrate']}</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">Dietary Fiber</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['fiber']}</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">Sugars</td>
-                        <td colspan="1">${food['servings']['serving'][serving]['sugar']}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <span class="nutrition-panel-macro">Protein</span>
-                        </td>
-                        <td colspan="1">${food['servings']['serving'][serving]['protein']}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="panel-right">
-            <div>Common Serving Sizes</div>
-            <ul class="servings-list">
-            </ul>
-        </div>
+    <div class="panel-left">
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="3">
+                        <span class="nutrition-facts">Nutrition Facts</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <span class="serving-size">${food['servings']['serving'][serving]['measurement_description']}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">Amount per serving</td>
+                </tr>
+                <tr>
+                    <td colspan="2">Calories</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['calories']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Total Fat</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['fat']}</td>
+                </tr>
+                <tr>
+                    &nbsp;
+                    <td colspan="2">Saturated Fat</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['saturated_fat']}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">Polyunsaturated Fat</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['polyunsaturated_fat']}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">Monounsaturated Fat</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['monounsaturated_fat']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Cholesterol</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['cholesterol']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Sodium</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['sodium']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Potassium</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['potassium']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Total Carbohydrate</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['carbohydrate']}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">Dietary Fiber</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['fiber']}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="2">Sugars</td>
+                    <td colspan="1">${food['servings']['serving'][serving]['sugar']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="nutrition-panel-macro">Protein</span>
+                    </td>
+                    <td colspan="1">${food['servings']['serving'][serving]['protein']}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-right">
+        <div>Common Serving Sizes</div>
+        <ul class="servings-list">
+        </ul>
     </div>
     `;
     const food_search_results = document.querySelector('#foods-search');
