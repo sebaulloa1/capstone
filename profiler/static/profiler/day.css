@@ -20,30 +20,59 @@ div {
     color: black;
 }
 
-.add-ingredient-form {
-        width: 45%;
-
-}
-
-.add-ingredient-form h2 {
-    color: black;
-}
-
-.ingredient-input {
-    width: 15rem;
-}
-
-.measures-input {
-    width: 5rem;
-}
-
-.quantity-input {
-    width: 3rem;
-}
-
 #food-search-container {
     width: 80%;
     border: 1px solid black;
+    color: black;
+}
+
+.table-food-option {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3rem;
+    width: 150%;
+}
+
+.table-food-option a {
+    text-decoration: none;
+    color: #0073AD;
+
+}
+
+.table-food-option a:hover {
+    text-decoration: underline;
+}
+
+#foods-search-table {
+    padding: 3px auto;
+    width: 95%;
+    margin: 10px auto;
+}
+
+.foods-search-table-heading {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 18px;
+    width: 50%;
+}
+
+.paging-btns {
+    text-decoration: none;
+    color: #0073AD;
+}
+
+.paging-btns:hover {
+    text-decoration: underline;
+}
+
+.paging-btns-td {
+    padding-top: 10px;
+}
+
+.foods-search-total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    width: 50%;
 }
 
 #nutrition-panel {
@@ -53,7 +82,15 @@ div {
     grid-template-areas: "left right";
     width: 95%;
     margin: 10px auto;
+}
 
+.nutrition-panel-heading {
+    font-size: 1.6rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 700;
+    line-height: 2em;
+    padding-left: 2.5%;
+    background-color: #ed5454bf;
 }
 
 .panel-left {
@@ -64,7 +101,7 @@ div {
     border: 2px solid #BCBCBC;
     width: 100%;
     font-family: Arial;
-    color: black;
+    color: #555555;
 }
 
 .nutrition-table table {
@@ -86,7 +123,7 @@ div {
     background-color: #888;
 }
 
-.ammount-per-serving {
+.amount-per-serving {
     font-weight: 700;
     font-size: 80%;
 }
@@ -96,7 +133,7 @@ div {
 }
 
 .table-bottom-border {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #D8ecf7;
     border-collapse: collapse;
 }
 
@@ -104,15 +141,20 @@ div {
     text-align: right;
 }
 
-#foods-search-table {
-    border: 1px solid gray;
-    padding: 3px;
-    width: 100%;
-}
-
 .panel-right {
     grid-area: right;
-    padding-left: 10px;
+    padding-left: 20px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.serving-list-options {
+    text-decoration: none;
+    font-weight: bold;
+    color: #0073ad;
+}
+
+.serving-list-options:hover {
+    text-decoration: underline;
 }
 
 .servings-heading {
@@ -126,4 +168,23 @@ div {
 .panel-right ul {
     margin: 0;
     padding-left: 2.5%;
+}
+
+a.serving-selected, .selected{
+    color: #e45b00;
+    text-decoration: none;
+    cursor: default;
+}
+
+.food-add-container {
+    margin-top: 20px;
+}
+
+.food-add-container button {
+    margin: 0 2px;
+}
+
+.quantity-input {
+    width: 5rem;
+    margin-right: 10px;
 }

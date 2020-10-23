@@ -178,6 +178,10 @@ function fatSecret(page_num) {
         food_search_results.innerHTML = `
             <table id="foods-search-table" cellpadding='0' cellspacing='0'>
                 <tbody>
+                    <colgroup>
+                        <col width="*">
+                        <col width="*">
+                    </colgroup>
                 </tbody>
             </table>
         `;
@@ -192,29 +196,31 @@ function fatSecret(page_num) {
         const table_body = document.querySelector('#foods-search-table').querySelector('tbody');
         table_body.innerHTML = `
             <tr>
-                <td>Search results for: ${food_name}</td>
-                <td align="right">${(page_num * 10) + 1} to ${(page_num * 10) + 10} of ${result['results']['foods']['total_results']}</td>
+                <td class="table-bottom-border foods-search-table-heading">Search results for: ${food_name}</td>
+                <td class="table-bottom-border foods-search-total" align="right">${(page_num * 10) + 1} to ${(page_num * 10) + 10} of ${result['results']['foods']['total_results']}</td>
             </tr>
         `;
         for (food of result['results']['foods']['food']) {
             console.log(food)
             let table_row = `
                 <tr>
-                    <td class="table-food-option"><a href="javascript:void(0)" onclick="foodSearch(${food.food_id},'${food_name}',${page_num}, 0);">${food.food_name}</a></td>
-                    <div>${food.food_description}</div>
+                    <td colspan="2" class="table-bottom-border table-food-option">
+                        <a href="javascript:void(0)" onclick="foodSearch(${food.food_id},'${food_name}',${page_num}, 0);">${food.food_name} ${food.hasOwnProperty('brand_name') ? '(' + food.brand_name + ')' : ''}</a>
+                        <div>${food.food_description}</div>
+                    </td>
                 </tr>
             `;
             table_body.insertAdjacentHTML('beforeend', table_row);
         }
         let pages_btns = document.createElement('tr');
         pages_btns.innerHTML = `
-            <td align="center">
+            <td colspan="2" align="center" class="paging-btns-td">
                 <span class="pages-btns-label">Result Page: </span>
-                <a href="javascript:void(0)" onclick="fatSecret(0);">First</a>
-                <a href="javascript:void(0)" onclick="fatSecret(${page_num - 1});">Prev</a>
-                <span>${page_num + 1}</span>
-                <a href="javascript:void(0)" onclick="fatSecret(${page_num + 1});">Next</a>
-                <a href="javascript:void(0)" onclick="fatSecret(${total_pages + 1});">Last</a>
+                <a class="paging-btns" href="javascript:void(0)" onclick="fatSecret(0);">First</a>
+                <a class="paging-btns" href="javascript:void(0)" onclick="fatSecret(${page_num - 1});">Prev</a>
+                <span class="selected">${page_num + 1}</span>
+                <a class="paging-btns" href="javascript:void(0)" onclick="fatSecret(${page_num + 1});">Next</a>
+                <a class="paging-btns" href="javascript:void(0)" onclick="fatSecret(${total_pages + 1});">Last</a>
             </td>
         `;
         table_body.insertAdjacentElement("beforeend", pages_btns);
@@ -223,129 +229,177 @@ function fatSecret(page_num) {
 
 function foodSearch(food_id, food_name, page_num, serving) {
     const food_search_results = document.querySelector('#foods-search');
-    food_search_results.innerHTML = '';
     fetch(`food_get/${food_id}`, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(result => {
         console.log(result);
-        food_search_results.innerHTML = `
-            <div class="nutrition-panel-heading"><b>${result['food']['food']['food_name']}</b>${result['food']['food']['servings']['serving'][0]['measurement_description']}</div>
+        if (document.querySelector('.nutrition-panel-heading') != null) {
+            document.querySelector('.nutrition-panel-heading').innerHTML = `
+                <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
+                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][0]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+            `;
+        } else {
+            let food_result = `
+            <div class="nutrition-panel-heading">
+                <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
+                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][0]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+            </div>
         `;
-        makeNutritionPanel(result, 0);
+        food_search_results.insertAdjacentHTML('afterbegin', food_result)
+        }
+         makeNutritionPanel(result, 0);
     })
 }
 
 function makeNutritionPanel(json, serving) {
     const food = json['food']['food'];
     console.log(food);
-    const nutrition_panel = document.createElement('div');
-    nutrition_panel.id = 'nutrition-panel';
-    nutrition_panel.innerHTML = `
+    let nutrition_panel_template = `
     <div class="panel-left">
-        <table>
-            <tbody>
-                <tr>
-                    <td colspan="3">
-                        <span class="nutrition-facts">Nutrition Facts</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <span class="serving-size">${food['servings']['serving'][serving]['measurement_description']}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">Amount per serving</td>
-                </tr>
-                <tr>
-                    <td colspan="2">Calories</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['calories']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Total Fat</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['fat']}</td>
-                </tr>
-                <tr>
-                    &nbsp;
-                    <td colspan="2">Saturated Fat</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['saturated_fat']}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2">Polyunsaturated Fat</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['polyunsaturated_fat']}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2">Monounsaturated Fat</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['monounsaturated_fat']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Cholesterol</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['cholesterol']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Sodium</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['sodium']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Potassium</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['potassium']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Total Carbohydrate</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['carbohydrate']}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2">Dietary Fiber</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['fiber']}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2">Sugars</td>
-                    <td colspan="1">${food['servings']['serving'][serving]['sugar']}</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="nutrition-panel-macro">Protein</span>
-                    </td>
-                    <td colspan="1">${food['servings']['serving'][serving]['protein']}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="nutrition-table">
+            <table>
+                <colgroup>
+                    <col width="5">
+                    <col width="*">
+                    <col width="40">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td colspan="3">
+                            <span class="nutrition-facts">Nutrition Facts</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <span class="serving-size">Serving Size ${food['servings']['serving'].hasOwnProperty(serving) == true ? food['servings']['serving'][serving]['serving_description'] : food['servings']['serving']['serving_description']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="table-separator"></td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="3"><span class="amount-per-serving">Amount per serving</span></td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Calories</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['calories'] : food['servings']['serving']['calories']}</td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Total Fat</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['fat'] : food['servings']['serving']['fat']}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="table-bottom-border">Saturated Fat</td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['saturated_fat'] : food['servings']['serving']['saturated_fat']}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="table-bottom-border">Polyunsaturated Fat</td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['polyunsaturated_fat'] : food['servings']['serving']['polyunsaturated_fat']}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="table-bottom-border">Monounsaturated Fat</td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['monounsaturated_fat'] : food['servings']['serving']['monounsaturated_fat']}</td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Cholesterol</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['cholesterol'] : food['servings']['serving']['cholesterol']}</td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Sodium</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['sodium'] : food['servings']['serving']['sodium']}</td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Potassium</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['potassium'] : food['servings']['serving']['potassium']}</td>
+                    </tr>
+                    <tr>
+                        <td class="table-bottom-border" colspan="2">
+                            <span class="nutrition-panel-macro">Total Carbohydrate</span>
+                        </td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['carbohydrate'] : food['servings']['serving']['carbohydrate']}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="table-bottom-border">Dietary Fiber</td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['fiber'] : food['servings']['serving']['fiber']}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="table-bottom-border">Sugars</td>
+                        <td class="table-bottom-border table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['sugar'] : food['servings']['serving']['sugar']}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="nutrition-panel-macro">Protein</span>
+                        </td>
+                        <td class="table-nutrient-value">${food['servings']['serving'].hasOwnProperty(serving) ? food['servings']['serving'][serving]['protein'] : food['servings']['serving']['protein']}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="panel-right">
-        <div>Common Serving Sizes</div>
-        <ul class="servings-list">
-        </ul>
+        <div class="serving-selector">
+            <div class="servings-heading">Common Serving Sizes</div>
+            <ul class="servings-list">
+            </ul>
+            <div class="food-add-container">
+                <label for="quantity">Quantity: </label>
+                <input class="quantity-input" name="quantity" type="number">
+                <button>Add</button>
+                or
+                <button class="back-btn" type="button">Back</button>
+            </div>
+        </div>
     </div>
     `;
-    const food_search_results = document.querySelector('#foods-search');
-    food_search_results.insertAdjacentElement('beforeend', nutrition_panel);
+    console.log(document.body.contains(document.querySelector('#nutrition-panel')))
+    if (document.body.contains(document.querySelector('#nutrition-panel'))) {
+        let nutrition_panel = document.getElementById('nutrition-panel');
+        nutrition_panel.innerHTML = nutrition_panel_template;
+    } else {
+        console.log('is it?')
+        let nutrition_panel = document.createElement('div');
+        nutrition_panel.id = 'nutrition-panel';
+        nutrition_panel.innerHTML = nutrition_panel_template;
+        const food_search_heading = document.querySelector('.nutrition-panel-heading');
+        food_search_heading.insertAdjacentElement('afterend', nutrition_panel);
+    }
     const servings_list = document.querySelector('.servings-list');
-    for (let i = 0; i < food['servings']['serving'].length; i++) {
-        if (i == serving) {
-            let list_item = document.createElement('li');
-            list_item.className = 'serving-selected';
-            list_item.innerHTML = `<a href="javascript=void(0)">${food['servings']['serving'][serving]['measurement_description']}</a>`;
-            servings_list.appendChild(list_item);
-        } else {
-            let list_item = document.createElement('li');
-            list_item.innerHTML = `<a href="javascript=void(0)">${food['servings']['serving'][i]['measurement_description']}</a>`;
-            servings_list.appendChild(list_item);
+    if (food['servings']['serving'].hasOwnProperty(serving) == false) {
+        let list_item = document.createElement('li');
+        list_item.className = 'table-bottom-border';
+        list_item.innerHTML = `<a class="serving-selected" href="javascript:void(0)">${food['servings']['serving']['serving_description']}</a>`;
+        servings_list.appendChild(list_item);
+    } else {
+        for (let i = 0; i < food['servings']['serving'].length; i++) {
+            if (i == serving || food['servings']['serving'].hasOwnProperty(serving) == false) {
+                let list_item = document.createElement('li');
+                list_item.className = 'table-bottom-border';
+                list_item.innerHTML = `<a class="serving-selected" href="javascript:void(0)" disabled>${food['servings']['serving'][serving]['serving_description']}</a>`;
+                servings_list.appendChild(list_item);
+            } else {
+                let list_item = document.createElement('li');
+                list_item.className = 'table-bottom-border';
+                list_item.innerHTML = `<a class="serving-list-options" href="javascript:void(0)">${Math.trunc(food['servings']['serving'][serving]['number_of_units'])} ${food['servings']['serving'][i]['measurement_description']}</a>`;
+                servings_list.appendChild(list_item);
+            }
         }
     }
+    
 }
