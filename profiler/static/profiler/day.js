@@ -2,10 +2,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.add-meal-btn').forEach(function(btn) {
         let meal = btn.dataset.meals
         btn.addEventListener('click', () => {addMeal(meal)})
-    })
+    });
     document.querySelector("#food-search").addEventListener('click', function() {
         fatSecret(0)
-    })
+    });
+    document.querySelector('#food-search-form').onsubmit = function() {
+        console.log('submitted');
+        fatSecret(0);
+        return false;
+    }
 })
 
 const delay = (function(){
@@ -224,7 +229,9 @@ function fatSecret(page_num) {
             </td>
         `;
         table_body.insertAdjacentElement("beforeend", pages_btns);
+        return false
     })
+    
 }
 
 function foodSearch(food_id, food_name, page_num, serving) {
@@ -238,22 +245,22 @@ function foodSearch(food_id, food_name, page_num, serving) {
         if (document.querySelector('.nutrition-panel-heading') != null) {
             document.querySelector('.nutrition-panel-heading').innerHTML = `
                 <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
-                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][0]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
             `;
         } else {
             let food_result = `
             <div class="nutrition-panel-heading">
                 <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
-                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][0]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
             </div>
         `;
         food_search_results.insertAdjacentHTML('afterbegin', food_result)
         }
-         makeNutritionPanel(result, 0);
+         makeNutritionPanel(result, serving, page_num);
     })
 }
 
-function makeNutritionPanel(json, serving) {
+function makeNutritionPanel(json, serving, page_num) {
     const food = json['food']['food'];
     console.log(food);
     let nutrition_panel_template = `
@@ -359,11 +366,13 @@ function makeNutritionPanel(json, serving) {
             <ul class="servings-list">
             </ul>
             <div class="food-add-container">
-                <label for="quantity">Quantity: </label>
-                <input class="quantity-input" name="quantity" type="number">
-                <button>Add</button>
-                or
-                <button class="back-btn" type="button">Back</button>
+                <form id="add-new-food-form">
+                    <label for="quantity">Quantity: </label>
+                    <input class="quantity-input" name="quantity" type="number">
+                    <button id="add-new-food">Add</button>
+                    or
+                    <button class="back-btn" type="button">Back</button>
+                </form>
             </div>
         </div>
     </div>
@@ -391,15 +400,26 @@ function makeNutritionPanel(json, serving) {
             if (i == serving || food['servings']['serving'].hasOwnProperty(serving) == false) {
                 let list_item = document.createElement('li');
                 list_item.className = 'table-bottom-border';
-                list_item.innerHTML = `<a class="serving-selected" href="javascript:void(0)" disabled>${food['servings']['serving'][serving]['serving_description']}</a>`;
+                list_item.innerHTML = `<a class="serving-selected" href="javascript:void(0)">${food['servings']['serving'][serving]['serving_description']}</a>`;
                 servings_list.appendChild(list_item);
             } else {
                 let list_item = document.createElement('li');
                 list_item.className = 'table-bottom-border';
-                list_item.innerHTML = `<a class="serving-list-options" href="javascript:void(0)">${Math.trunc(food['servings']['serving'][serving]['number_of_units'])} ${food['servings']['serving'][i]['measurement_description']}</a>`;
+                list_item.innerHTML = `<a class="serving-list-options" href="javascript:void(0)" onclick="foodSearch(${food['food_id']}, '${food['food_name']}', ${page_num}, ${i});">${Math.trunc(food['servings']['serving'][serving]['number_of_units'])} ${food['servings']['serving'][i]['measurement_description']}</a>`;
                 servings_list.appendChild(list_item);
             }
         }
     }
+    document.querySelector('#add-new-food').addEventListener('click', () => {
+        addNewFood(json)
+    });
+    document.querySelector('#add-new-food-form').onsubmit = function() {
+        addNewFood(json);
+        return false;
+    }
     
+}
+
+function addNewFood(json) {
+    return
 }
