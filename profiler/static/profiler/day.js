@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+    renderChart();  
     document.querySelectorAll('.add-meal-btn').forEach(function(btn) {
         let meal = btn.dataset.meals
-        btn.addEventListener('click', () => {addMeal(meal)})
+        btn.addEventListener('click', () => {addMealStart(meal)})
     });
     document.querySelector("#food-search").addEventListener('click', function() {
         fatSecret(0)
@@ -13,157 +14,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 })
 
-const delay = (function(){
-    var timer = 0;
-    return function(callback, ms){
-        clearTimeout (timer);
-        timer = setTimeout(callback, ms);
-    };
-})();
+let new_meal_dict = {};
 
-
-function throttle(fn,d){
-    let flag=true;
-    return function(){
-        let context=this,
-        args=arguments
-        if(flag){
-            fn.apply(context,args);
-            flag=false;
-            setTimeout(()=>{
-                flag=true;
-            },d);
-        }
-    }
-}
-
-function addMeal(meal) {
-    
+function addMealStart(meal) {
     console.log('clicked', meal);
-    // Get the meal form container
-    const add_meal_form_container = document.querySelector('.add-meal-form-container');
-    add_meal_form_container.innerHTML = '';
-    // Create a button div to add a form for more ingredients
-    const form_btns = document.createElement('div');
-    form_btns.innerHTML = `<button class="add-ingredient-btn">Add Ingredient</button><input class="submit-meal" type="submit" value="Submit">`;
-    // Create the form
-    const meal_form = document.createElement('form');
-    // Create a template for the ingredient form
-    const form_row = `
-        <div>
-            <label for="ingredients">Ingredient:</label>
-            <input class="ingredient-input" type="text" name="ingredient" list="autocomplete">
-            <datalist id="autocomplete"></datalist>
-            <label for="measures">Measure:</label>
-            <select class="measures-input" disabled name="measures">
-            </select>
-            <label for="quantity">Quantity:</label>
-            <input type="number" class="quantity-input" name="quantity">
-        </div>
+    const add_meal_container = document.querySelector('.add-meal-container');
+    add_meal_container.style.display = "grid";
+    const new_meal_list_container = document.querySelector('.new-meal-list-container');
+    new_meal_list_container.innerHTML = `
+        <h2>New <span id="meal">${meal.toUpperCase()}</span></h2>
+        <ol class="new-meal-list">
+        </ol>
     `;
-    // Set a title for the form depending on the meal clicked and add a row
-    meal_form.innerHTML = `<h2>${meal.toUpperCase()}</h2>` + form_row;
-    meal_form.className = 'add-ingredient-form';
-    // Add the ingredient form to the container
-    add_meal_form_container.append(meal_form);
-    // Add the buttons div to the container
-    add_meal_form_container.insertAdjacentElement('beforeend', form_btns)
-    // Create a click listener to the add ingredient button
-    document.querySelector('.add-ingredient-btn').addEventListener('click', () => {
-        // Add another ingredient form
-        meal_form.insertAdjacentHTML('beforeend', form_row);
-        // Create an event listener for keyup to fill the measures options depending on the ingredient name
-        let ingr_name = document.querySelectorAll('.ingredient-input');
-        ingr_name.forEach(function(input) {
-            input.addEventListener('keyup', () => {
-                throttle(autocomplete(input), 1000)
-                // Have a little delay after every keyup, to make sure the user stopped writing
-                delay(() => {
-                    measuresAPI(input)
-                }, 1250)
-            })
-        });
-    })
-    let ingr_name = document.querySelector('.ingredient-input')
-    ingr_name.addEventListener('keyup', () => {
-        throttle(autocomplete(ingr_name), 1000)
-        delay(() => {
-            measuresAPI(ingr_name)
-        }, 1250)  
-    })
-
-    const datetime = document.querySelector("#date").dataset.timestamp;
-    document.querySelector('.submit-meal').addEventListener('click', () => {
-        let new_meal = [];
-        let form_elements = document.querySelector('.add-ingredient-form').elements;
-        for (let x = 0; x < form_elements.length; x += 3) {
-            let ingredient = {};
-            ingredient['name'] = form_elements[x].value;
-            ingredient['id'] = form_elements[x].dataset.ingr_id;
-            ingredient['measure'] = form_elements[x+1].value;
-            ingredient['qty'] = form_elements[x+2].value;
-            new_meal.push(ingredient);
-        };
-        console.log(new_meal);
-        fetch('/new_meal', {
-            method: 'POST',
-            body: JSON.stringify({
-                meal: new_meal,
-                date: datetime,
-                meal_time: meal
-            })
-        })
-        .then(response => console.log(response))
-    });
-    
-    console.log(datetime)
 }
 
-function measuresAPI(input) {
-    
-
-
-    fetch(`https://api.edamam.com/api/food-database/v2/parser?ingr=${encodeURI(input.value)}&app_id=e572f575&app_key=5e459acdcb817d770ab8212e966bdfb6`)
-    .then(response => response.json())
-    .then(result => {
-        console.log(result);
-        console.log(input.value)
-        input.parentElement.querySelector('.measures-input').disabled = false;
-        for (var x = 0; x < result['hints'].length; x++) {
-            if (result['hints'][x]['food']['label'].localeCompare(input.value, undefined, {sensitivity: 'base'}) === 0) {
-                for (var i = 0; i < result['hints'][x]['measures'].length; i++) {
-                    var option = document.createElement("option");
-                    option.value = result['hints'][x]['measures'][i]['uri'];
-                    option.text = result['hints'][x]['measures'][i]['label'];
-                    input.parentElement.querySelector('.measures-input').appendChild(option);
-                }
-                input.dataset.ingr_id = result['hints'][x]['food']['foodId'];
-                break
-            }
-        }
-        
-    })
-}
-
-function autocomplete(input) {
-    let autocomplete_datalist = input.nextElementSibling;
-    console.log(autocomplete_datalist);
-    fetch(`https://api.edamam.com/auto-complete?q=${input.value}&limit=10&app_id=e572f575&app_key=5e459acdcb817d770ab8212e966bdfb6`, {
-        headers: {
-            'Access-Control-Allow-Origin': 'https://api.edamam.com/auto-complete'
-        }
-    })
-    .then(response => response.json())
-    .then(result => {
-        console.log(result);
-        for (let i = 0; i < 10; i++) {
-            let option = document.createElement('option');
-            option.innerHTML = result[i];
-            autocomplete_datalist.appendChild(option)
-        }
-    })
-
-}
 
 function fatSecret(page_num) {
     if (page_num < 0) {
@@ -177,6 +41,10 @@ function fatSecret(page_num) {
     .then(response => response.json())
     .then(result => {
         console.log(result);
+        if (result['results'].hasOwnProperty('error')) {
+            alert('Invalid IP')
+            return
+        }
         const food_search_container = document.querySelector('#food-search-container');
         const food_search_results = document.createElement('div');
         food_search_results.id = 'foods-search';
@@ -236,22 +104,32 @@ function fatSecret(page_num) {
 
 function foodSearch(food_id, food_name, page_num, serving) {
     const food_search_results = document.querySelector('#foods-search');
-    fetch(`food_get/${food_id}`, {
+    fetch(`/food_get/${food_id}`, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(result => {
         console.log(result);
+        if (result['food'].hasOwnProperty('error')) {
+            alert('Invalid IP');
+            return
+        }
         if (document.querySelector('.nutrition-panel-heading') != null) {
             document.querySelector('.nutrition-panel-heading').innerHTML = `
                 <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
-                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+                <div>
+                    <span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span>
+                    <span class="heading-food-sub-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? '(' + Math.round(result['food']['food']['servings']['serving'][serving]['metric_serving_amount']) + ' ' + result['food']['food']['servings']['serving'][serving]['metric_serving_unit'] + ')' : '(' + Math.round(result['food']['food']['servings']['serving']['metric_serving_amount']) + result['food']['food']['servings']['serving']['metric_serving_unit'] + ')'}</span>   
+                </div>
             `;
         } else {
             let food_result = `
             <div class="nutrition-panel-heading">
                 <div><span class="heading-food-title">${result['food']['food']['food_name']} ${result['food']['food'].hasOwnProperty('brand_name') ? '(' + result['food']['food']['brand_name'] + ')' : ''}</span></div>
-                <div><span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span></div>
+                <div>
+                    <span class="heading-food-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? result['food']['food']['servings']['serving'][serving]['serving_description'] : result['food']['food']['servings']['serving']['serving_description']}</span>
+                    <span class="heading-food-sub-description">${result['food']['food']['servings']['serving'].hasOwnProperty('0') == true ? '(' + Math.round(result['food']['food']['servings']['serving'][serving]['metric_serving_amount']) + ' ' + result['food']['food']['servings']['serving'][serving]['metric_serving_unit'] + ')' : '(' + Math.round(result['food']['food']['servings']['serving']['metric_serving_amount']) + result['food']['food']['servings']['serving']['metric_serving_unit'] + ')'}</span>   
+                </div>
             </div>
         `;
         food_search_results.insertAdjacentHTML('afterbegin', food_result)
@@ -369,10 +247,8 @@ function makeNutritionPanel(json, serving, page_num) {
                 <form id="add-new-food-form">
                     <label for="quantity">Quantity: </label>
                     <input class="quantity-input" name="quantity" type="number">
-                    <button id="add-new-food">Add</button>
-                    or
-                    <button class="back-btn" type="button">Back</button>
-                </form>
+                </form>    
+                <button id="add-new-food" autofocus>Add</button>
             </div>
         </div>
     </div>
@@ -405,21 +281,210 @@ function makeNutritionPanel(json, serving, page_num) {
             } else {
                 let list_item = document.createElement('li');
                 list_item.className = 'table-bottom-border';
-                list_item.innerHTML = `<a class="serving-list-options" href="javascript:void(0)" onclick="foodSearch(${food['food_id']}, '${food['food_name']}', ${page_num}, ${i});">${Math.trunc(food['servings']['serving'][serving]['number_of_units'])} ${food['servings']['serving'][i]['measurement_description']}</a>`;
+                list_item.innerHTML = `<a class="serving-list-options" href="javascript:void(0)" onclick="foodSearch(${food['food_id']}, '${food['food_name']}', ${page_num}, ${i});">${Math.round(food['servings']['serving'][i]['number_of_units'])} ${food['servings']['serving'][i]['measurement_description']}</a>`;
                 servings_list.appendChild(list_item);
             }
         }
     }
     document.querySelector('#add-new-food').addEventListener('click', () => {
-        addNewFood(json)
+        let quantity = document.querySelector('.quantity-input').value;
+        addNewFood(json, serving, quantity)
     });
     document.querySelector('#add-new-food-form').onsubmit = function() {
-        addNewFood(json);
+        let quantity = document.querySelector('.quantity-input').value;
+        addNewFood(json, serving, quantity);
         return false;
     }
     
 }
 
-function addNewFood(json) {
-    return
+function addNewFood(json, serving, quantity) {
+    console.log(json, serving)
+    const food = json['food']['food']
+    console.log('food', food)
+    const new_meal_list = document.querySelector('.new-meal-list');
+    let new_row = document.createElement('li');
+    let food_serving;
+    if (food['servings']['serving'].hasOwnProperty(serving)) {
+        food_serving = food['servings']['serving'][serving];
+    } else {
+        food_serving = food['servings']['serving'];
+    }
+    new_row.innerHTML = `
+        <div>
+            <span style="font-size:1.5rem; font-weight:bold">${food['food_name']} ${food.hasOwnProperty('brand_name') ? '(' + food['brand_name'] + ')' : ''}</span>
+            <span style="font-size:1.5rem">${quantity} x ${food_serving['serving_description']}</span>
+        </div>
+        <div class="table-bottom-border">
+            <span class="meal-list-details">Calories: ${(food_serving['calories'] * quantity).toFixed(2)} | Carbs: ${(food_serving['carbohydrate'] * quantity).toFixed(2)} | Fat: ${(food_serving['fat'] * quantity).toFixed(2)} | Protein: ${(food_serving['protein'] * quantity).toFixed(2)}</span>
+        </div>
+    `;
+    new_meal_list.appendChild(new_row);
+    if (document.querySelector('#save-new-meal') == null) {
+        let save_btn = `
+            <div>
+                <button id="save-new-meal">Save</button>
+            </div>
+        `;
+        new_meal_list.insertAdjacentHTML('afterend', save_btn);
+        document.querySelector('#save-new-meal').addEventListener('click', saveMeal);
+    }
+    
+    let new_meal = {
+        'name': `${food['food_name']} ${food.hasOwnProperty('brand_name')?food['brand_name']:''}`,
+        'measurement_description': food_serving['measurement_description'],
+        'number_of_units': food_serving['number_of_units'],
+        'metric_serving_amount': food_serving['metric_serving_amount'],
+        'metric_serving_unit': food_serving['metric_serving_unit'],
+        'calories': food_serving['calories'] * quantity,
+        'carbs': food_serving['carbohydrate'] * quantity,
+        'fat': food_serving['fat'] * quantity,
+        'protein': food_serving['protein'] * quantity,
+        'cholesterol': food_serving['cholesterol'] * quantity,
+        'sat_fat': food_serving['saturated_fat'] * quantity,
+        'poly_fat': food_serving['polyunsaturated_fat'] * quantity,
+        'mono_fat': food_serving['monounsaturated_fat'] * quantity,
+        'fiber': food_serving['fiber'] * quantity,
+        'sugars': food_serving['sugar'] * quantity,
+        'sodium': food_serving['sodium'] * quantity,
+        'potassium': food_serving['potassium'] * quantity,
+        'type': document.querySelector('#meal').innerHTML,
+        'date': document.querySelector('#date').dataset.timestamp
+    };
+    console.log(new_meal);
+    new_meal_dict[food['food_id']] = new_meal;
+    console.log(new_meal_dict)
+}
+
+function saveMeal() {
+    console.log('working');
+    fetch('/save_meal', {
+        method: "POST",
+        body: JSON.stringify({
+            meal: new_meal_dict
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+    })
+}
+
+function renderChart() {
+    let get_date = document.querySelector('#date').dataset.timestamp;
+    get_date = new Date(get_date)
+    console.log(get_date)
+    let date = new Date(get_date.getFullYear(), get_date.getMonth(), get_date.getDate()).getTime() / 1000
+    console.log(date)
+    fetch(`/get_calendar/${date}`)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        
+        // GOALS
+        let goal_protein = 93;
+        let goal_fat = 201;
+        let goal_carbs = 30;
+        let goal_calories = 2304;
+        // GOALS
+
+        let remain_calories = goal_calories - result['calories'];
+        let percent_calories = (result['calories'] / goal_calories) * 100;
+        let percent_calories_remain = 100 - percent_calories;
+        if (remain_calories <= 0) {
+            remain_calories = result['calories'];
+            percent_calories_remain = 0;
+        }
+        let remain_protein = goal_protein - result['protein'];
+        let percent_protein = (result['protein'] / goal_protein) * 100;
+        let percent_protein_remain = 100 - percent_protein;
+        if (remain_protein <= 0) {
+            remain_protein = result['protein'];
+            percent_protein_remain = 0;
+        }
+        let remain_fat = goal_fat - result['fat'];
+        let percent_fat = (result['fat'] / goal_fat) * 100;
+        let percent_fat_remain = 100 - percent_fat;
+        if (remain_fat <= 0) {
+            remain_fat = result['fat'];
+            percent_fat_remain = 0;
+        }
+        let remain_carbs = goal_carbs - result['carbs'];
+        let percent_carbs = (result['carbs'] / goal_carbs) * 100;
+        let percent_carbs_remain = 100 - percent_carbs;
+        if (remain_carbs <= 0) {
+            remain_carbs = result['carbs'];
+            percent_carbs_remain = 0;
+        }
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            toolTip: {
+                shared: true
+            },
+            title:{
+                text: "Daily Nutrition"
+            },
+            axisY: {
+                title: "Amount(g)"
+            },
+            data: [{        
+                type: "column",  
+                showInLegend: true, 
+                legendMarkerColor: "grey",
+                tooltipContent: "<br>Protein</br>><hr>{y}",
+                dataPoints: [   
+                    { y: 300878, label: "Protein", x: 1 },   
+                    { y: 300878, label: "Fat", x: 2 },
+                    { y: 316469, label: "Carbohydrate", x: 3}
+                ]
+            },
+            /*{
+                type: "column",
+                name: "Monounsaturated Fat",
+                tooltipContent: "",
+                dataPoints: [
+                    { y: 100000, label: "Fat"}
+                ]
+            },
+            {
+                type: "stackedColumn",
+                name: "Polyunsaturated Fat",
+                dataPoints: [
+                    { y: 0, label: "Protein"},
+                    { y: 150000, label: "Fat"}
+                ]
+            },
+            {
+                type: "stackedColumn",
+                name: "Sugar",
+                dataPoints: [
+                    { y: 0, label: "Protein"},
+                    { y: 0, label: "Fat"},
+                    { y: 150000, label: "Carbohydrates"}
+                ]
+            },
+            {
+                type: "stackedColumn",
+                name: "Fiber",
+                dataPoints: [
+                    { y: 0, label: "Protein"},
+                    { y: 0, label: "Fat"},
+                    { y: 100000, label: "Carbohydrates"}
+                ]
+            },
+            {
+                type: "stackedColumn",
+                dataPoints: [
+                    { y: 200000, label: "Protein"},
+                    { y: 200000, label: "Fat"},
+                    { y: 200000, label: "Carbohydrates"}
+                ]
+            }*/
+            ]
+        });
+        console.log(chart);
+        chart.render();
+    })
+    
 }

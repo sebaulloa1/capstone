@@ -9,6 +9,7 @@ import requests
 from django.core.exceptions import ObjectDoesNotExist
 from decimal import Decimal
 from django.urls import reverse
+from django.core import serializers
 
 def get_token():
     data = {"grant_type": "client_credentials", "scope": "basic"}
@@ -26,30 +27,23 @@ def calendar(request):
     return render(request, "profiler/calendar.html")
 
 def day(request, date):
-    date = datetime.datetime.fromtimestamp(date)
-    print(date)
-    #parse_checker(date)
-    #nutrition_api(request, date)
-    """
-    params = {'method': 'recipes.search', 'format': 'json', 'search_expression': 'bacon cheese burger'}
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjEzRTFGRDgwMTQ0Q0IwQTI4NDRFMzI4REZCNUU4NTQyRDE0QUI2RUYiLCJ0eXAiOiJhdCtqd3QiLCJ4NXQiOiJFLUg5Z0JSTXNLS0VUaktOLTE2RlF0Rkt0dTgifQ.eyJuYmYiOjE2MDI5OTI0MDAsImV4cCI6MTYwMzA3ODgwMCwiaXNzIjoiaHR0cHM6Ly9vYXV0aC5mYXRzZWNyZXQuY29tIiwiYXVkIjoiYmFzaWMiLCJjbGllbnRfaWQiOiI4YWZkMDdiNzM1NWM0MWUzODEzYTgwZTMwMDhjMTI3ZSIsInNjb3BlIjpbImJhc2ljIl19.ClvCUYzSNJx5ubEPATG7ZtkRZcss_QPeV44msnSG3rW7fE70JBdYnMcDGxaNjLEfPogQqMDnNGwCqKrHbw8onFY3nRCBHpc1ydS_DoNkMwgXab1AmzktyVHiuS1lnwhs-tlegCdHRsWjufFQsHoXfR09LgdndGeQ0QljxZ5mE5vUcnuE3UvkMN2N0jjcOYwYLu5okPst4hFuHz5MnCVZNpFIGVR0E_4E-fBHpcPBuqpG8Obv8UwcGqcL7EFS4M2o0k2mZy3LdmilHSFtHSJ1AR2W0CSj2Upm9PHkgwK4ieegMSuprDM9rYmgP7eQh39o9sNGvyJjITKaC6bOREuC_A'}
-    r = requests.post('https://platform.fatsecret.com/rest/server.api', params=params, headers=headers)
-    print(r.url)
-    print(r.headers)
-    print(r.json())
-    with open("test.json", "w") as f:
-        json.dump(r.json(), f, indent=4)
-    """
+    iso_date = datetime.datetime.fromtimestamp(date)
+    print(iso_date)
+    calendar = Calendar.objects.get_or_create(day=iso_date)
+    print(calendar[0].protein)
     return render(request, "profiler/day.html", {
-        "date": date
+        "date": iso_date,
+        "calendar": calendar[0]
     })
 
 def today(request):
     date = datetime.datetime.today()
     print(date)
-    #food_parser()
+    calendar = Calendar.objects.get_or_create(day=date)
+    print(calendar)
     return render(request, "profiler/day.html", {
-        "date": date
+        "date": date,
+        "calendar": calendar[0]
     })
 
 @csrf_exempt
@@ -73,73 +67,6 @@ def new_meal(request):
        
         return HttpResponse()
 
-def nutrition_api(request, date):
-    # API parameters
-    params = {'app_id': '99a7b787', 'app_key': '9a3fc6f5cccc22d9f5855692f022cb3c'}
-
-    # Get all meal models from that day
-    breakfast = Breakfast.objects.filter(date=date)
-    lunch = Lunch.objects.filter(date=date)
-    dinner = Dinner.objects.filter(date=date)
-    snack = Snack.objects.filter(date=date)
-    print(breakfast)
-
-    # Build a json for the meals
-    recipe = {'title': 'Day meal',
-        'yield': '1 serving',
-        'ingr': []}
-    for meal in breakfast:
-        recipe['ingr'] += {f'{meal.quantity} {meal.measure} {meal.ingredient}'}
-    for meal in lunch:
-        recipe['ingr'] += {f'{meal.quantity} {meal.measure} {meal.ingredient}'}
-    for meal in dinner:
-        recipe['ingr'] += {f'{meal.quantity} {meal.measure} {meal.ingredient}'}
-    for meal in snack:
-        recipe['ingr'] += {f'{meal.quantity} {meal.measure} {meal.ingredient}'}
-
-    print(recipe)
-    # Send the request to the API with the meals
-    r = requests.post('https://api.edamam.com/api/nutrition-details', params=params,json=recipe)
-    print(r.url)
-    print(r.json(), "json")
-    """
-    # If got a response with the nutrients
-    if r.ok:
-        for meal in breakfast:
-            meal.nutrition_parsed = True
-            meal.save()
-        for meal in lunch:
-            meal.nutrition_parsed = True
-            meal.save()
-        for meal in dinner:
-            meal.nutrition_parsed = True
-            meal.save()
-        for meal in snack:
-            meal.nutrition_parsed = True
-            meal.save()
-
-    nutrients = r.json()
-    
-    # Update the calendar model to save the total nutrients, to avoid re-calling the api every reload
-    # (checked before calling this function with the parse_checker function)
-    try:
-        day_nutrition = Calendar.objects.get(day=date)
-        day_nutrition.calories += Decimal(nutrients['totalNutrients']['ENERC_KCAL']['quantity'])
-        day_nutrition.protein += Decimal(nutrients['totalNutrients']['PROCNT']['quantity'])
-        day_nutrition.fat += Decimal(nutrients['totalNutrients']['FAT']['quantity'])
-        day_nutrition.fat_sat += Decimal(nutrients['totalNutrients']['FASAT']['quantity'])
-        day_nutrition.fat_trans += Decimal(nutrients['totalNutrients']['FATRN']['quantity'])
-        day_nutrition.sugar += Decimal(nutrients['totalNutrients']['SUGAR']['quantity'])
-        day_nutrition.carb += Decimal(nutrients['totalNutrients']['CHOCDF']['quantity'])
-        day_nutrition.fiber += Decimal(nutrients['totalNutrients']['FIBTG']['quantity'])
-        day_nutrition.save()
-    except Calendar.DoesNotExist:
-        day_nutrition = Calendar(day=date, calories=nutrients['totalNutrients']['ENERC_KCAL']['quantity'], protein=nutrients['totalNutrients']['PROCNT']['quantity'], fat=nutrients['totalNutrients']['FAT']['quantity'],
-                        fat_sat=nutrients['totalNutrients']['FASAT']['quantity'], fat_trans=nutrients['totalNutrients']['FATRN']['quantity'], sugar=nutrients['totalNutrients']['SUGAR']['quantity'],
-                        carb=nutrients['totalNutrients']['CHOCDF']['quantity'], fiber=nutrients['totalNutrients']['FIBTG']['quantity'])
-        day_nutrition.save()
-    """
-    return r.json()
 
 # For checking if that day (date) meals have been added in the total nutrients 
 # (have been passed to the api)
@@ -171,12 +98,6 @@ def parse_checker(date):
     
     return True
 
-
-def food_parser():
-    params = {'ingr': 'bacon', 'app_id': 'e572f575', 'app_key': '5e459acdcb817d770ab8212e966bdfb6'}
-    r = requests.get('https://api.edamam.com/api/food-database/v2/parser', params=params)
-    print(r.json())
-    return 
 
 def test(request):
     return render(request, 'profiler/test.html')
@@ -213,3 +134,49 @@ def fatSecretGet(request, id):
         return JsonResponse({
             'food': r
         })
+
+@csrf_exempt
+def saveNewMeal(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        for meal in data['meal'].values():
+            print(meal['name'])
+            new_meal = globals()[meal['type'].lower().capitalize()](date=datetime.datetime.fromisoformat(meal['date']), ingredient=meal['name'], measure=meal['measurement_description'], metric_measure=f"{meal['metric_serving_amount']} {meal['metric_serving_unit']}", quantity=meal['number_of_units'], calories=meal['calories'], carbs=meal['carbs'], fat=meal['fat'], protein=meal['protein'], cholesterol=meal['cholesterol'], sat_fat=meal['sat_fat'], poly_fat=meal['poly_fat'], mono_fat=meal['mono_fat'], fiber=meal['fiber'], sugars=meal['sugars'], sodium=meal['sodium'], potassium=meal['potassium'])
+            new_meal.save()
+        updateCalendar(data['meal'])
+        print(next(iter(data['meal'].values())))
+        calendar = Calendar.objects.filter(day=datetime.datetime.fromisoformat(next(iter(data['meal'].values()))['date']))
+        print(calendar)
+        calendar = serializers.serialize('json', calendar)
+    return JsonResponse(calendar, safe=False)
+
+def updateCalendar(meal):
+    print(next(iter(meal.values())))
+    date = datetime.datetime.fromisoformat(next(iter(meal.values()))['date'])
+    day = Calendar.objects.get(day=date)
+    for i in meal:
+        print(i)
+        day.calories += Decimal(meal[i]['calories'])
+        day.protein += Decimal(meal[i]['protein'])
+        day.cholesterol += Decimal(meal[i]['cholesterol'])
+        day.fat += Decimal(meal[i]['fat'])
+        day.poly_fat += Decimal(meal[i]['poly_fat'])
+        day.sat_fat += Decimal(meal[i]['sat_fat'])
+        day.mono_fat += Decimal(meal[i]['mono_fat'])
+        day.sugar += Decimal(meal[i]['sugars'])
+        day.carbs += Decimal(meal[i]['carbs'])
+        day.fiber += Decimal(meal[i]['fiber'])
+        day.sodium += Decimal(meal[i]['sodium'])
+        day.potassium += Decimal(meal[i]['potassium'])
+        day.save()
+
+
+def getCalendar(request, date):
+    
+    date = datetime.date.fromtimestamp(date)
+    print(date)
+    calendar = Calendar.objects.filter(day=date)
+    calendar = list(calendar.values())
+    print(calendar)
+    return JsonResponse(calendar, safe=False)

@@ -10,29 +10,31 @@
     <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
     <button class="add-meal-btn" data-meals="snack">Add a snack</button>
 
-    <div class="add-meal-form-container">
+    <div class="add-meal-container" style="display: none;">
+        <div id="food-search-container">
+            <form id="food-search-form">
+                <h2>Food Search:</h2>
+                <input type="text" id="food-search-name">
+                <input type="button" value="Search" id="food-search">
+            </form>
+        </div>
+        <div class="new-meal-list-container">
+        </div>
     </div>
 
     <div>
         <ul>
-            <li>Protein: </li>
-            <li>Fat: </li>
-            <li>Carbohydrates: </li>
-            <li>Calories: </li>
-            <li>Fiber: </li>
+            <li>Protein: <span id="protein">{{ calendar.protein }}</span></li>
+            <li>Fat: {{ calendar.fat }}</li>
+            <li>Carbohydrates: {{ calendar.carbs }}</li>
+            <li>Calories: {{ calendar.calories }}</li>
+            <li>Fiber: {{ calendar.fiber }}</li>
             
         </ul>
     </div>
     
-    <script src="https://platform.fatsecret.com/js?key=8afd07b7355c41e3813a80e3008c127e&auto_load=true"></script>
-
-    <div id="food-search-container">
-        <h2>Food Search:</h2>
-        <form id="food-search-form">
-            <input type="text" id="food-search-name">
-            <input type="button" value="Search" id="food-search">
-        </form>
-    </div>
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    <!-- <script src="https://platform.fatsecret.com/js?key=8afd07b7355c41e3813a80e3008c127e&auto_load=true"></script> -->
 {% endblock %}
 {% block script %}
 <script src="{% static 'profiler/day.js' %}"></script>

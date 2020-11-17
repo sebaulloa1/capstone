@@ -41,7 +41,7 @@ function renderCalendar() {
     for (let i = 1; i <= lastDay; i++) {
         // Highlight current day with class "today"
         if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) {
-            days += `<a href="day/${new Date(date.getFullYear(), date.getMonth(), i).getTime() / 1000}"><div class="today">${i}</div></a>`
+            days += `<a href="/"><div class="today">${i}</div></a>`
         } else {
         days += `<a href="day/${new Date(date.getFullYear(), date.getMonth(), i).getTime() / 1000}"><div>${i}</div></a>`;
         }

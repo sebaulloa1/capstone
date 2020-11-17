@@ -20,10 +20,36 @@ div {
     color: black;
 }
 
-#food-search-container {
-    width: 80%;
+.add-meal-container {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "search list";
+    width: 95%;
     border: 1px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.new-meal-list-container {
+    grid-area: list;
+    border-left: 1px solid black;
+    text-align: center;
     color: black;
+}
+
+.meal-list-details {
+    font-size: 1.2rem;
+}
+
+#food-search-container {
+    grid-area: search;
+    color: black;
+}
+
+#food-search-form {
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
 }
 
 .table-food-option {
@@ -35,7 +61,6 @@ div {
 .table-food-option a {
     text-decoration: none;
     color: #0073AD;
-
 }
 
 .table-food-option a:hover {
@@ -91,6 +116,11 @@ div {
     line-height: 2em;
     padding-left: 2.5%;
     background-color: #ed5454bf;
+}
+
+.heading-food-sub-description {
+    font-size: 1.4rem;
+    font-weight: normal;
 }
 
 .panel-left {
@@ -174,6 +204,7 @@ a.serving-selected, .selected{
     color: #e45b00;
     text-decoration: none;
     cursor: default;
+    font-weight: bold;
 }
 
 .food-add-container {
