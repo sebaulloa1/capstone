@@ -380,107 +380,119 @@ function renderChart() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
+        result = result[0];
+        let chart_dict = {'protein': {}, 'fat': {}, 'carbs': {}, 'calories': {}};
+        // GOALS
+        chart_dict['protein']['goal'] = 93;
+        chart_dict['fat']['goal'] = 201;
+        chart_dict['carbs']['goal'] = 30;
+        chart_dict['calories']['goal'] = 2304;
+        // GOALS
         
-        // GOALS
-        let goal_protein = 93;
-        let goal_fat = 201;
-        let goal_carbs = 30;
-        let goal_calories = 2304;
-        // GOALS
+        for (macro in chart_dict) {
+            chart_dict[macro]['remain'] = chart_dict[macro]['goal'] - result[macro];
+            chart_dict[macro]['percent'] = (result[macro] / chart_dict[macro]['goal']) * 100;
+            chart_dict[macro]['percent_remain'] = 100 - chart_dict[macro]['percent'];
+            if (chart_dict[macro]['remain'] <= 0) {
+                chart_dict[macro]['remain'] = result[macro];
+                chart_dict[mcro]['percent_remain'] = 0;
+            }
+        }
 
-        let remain_calories = goal_calories - result['calories'];
-        let percent_calories = (result['calories'] / goal_calories) * 100;
-        let percent_calories_remain = 100 - percent_calories;
-        if (remain_calories <= 0) {
-            remain_calories = result['calories'];
-            percent_calories_remain = 0;
-        }
-        let remain_protein = goal_protein - result['protein'];
-        let percent_protein = (result['protein'] / goal_protein) * 100;
-        let percent_protein_remain = 100 - percent_protein;
-        if (remain_protein <= 0) {
-            remain_protein = result['protein'];
-            percent_protein_remain = 0;
-        }
-        let remain_fat = goal_fat - result['fat'];
-        let percent_fat = (result['fat'] / goal_fat) * 100;
-        let percent_fat_remain = 100 - percent_fat;
-        if (remain_fat <= 0) {
-            remain_fat = result['fat'];
-            percent_fat_remain = 0;
-        }
-        let remain_carbs = goal_carbs - result['carbs'];
-        let percent_carbs = (result['carbs'] / goal_carbs) * 100;
-        let percent_carbs_remain = 100 - percent_carbs;
-        if (remain_carbs <= 0) {
-            remain_carbs = result['carbs'];
-            percent_carbs_remain = 0;
-        }
+        chart_dict['fat']['monounsaturated'] = {'current': result['mono_fat'], 'percent': (result['mono_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['fat']['polyunsaturated'] = {'current': result['poly_fat'], 'percent': (result['poly_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['fat']['saturated'] = {'current': result['sat_fat'], 'percent': (result['sat_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['carbs']['sugar'] = {'current': result['sugar'], 'percent': (result['sugar'] / chart_dict['carbs']['goal']) * 100};
+        chart_dict['carbs']['fiber'] = {'current': result['fiber'], 'percent': (result['fiber'] / chart_dict['carbs']['goal']) * 100};
+
+        console.log(chart_dict);
         var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,
             theme: "light1", // "light1", "light2", "dark1", "dark2"
             toolTip: {
-                shared: true
+                shared: true,
+                contentFormatter: function(e) {
+                    let macro = (e.entries[0].dataPoint.label).toLowerCase();
+                    if (macro == 'carbohydrate') {macro = 'carbs'};
+                    let str = `${e.entries[0].dataPoint.label} (${Math.round(chart_dict[macro]['percent'])}%)<br><span>Current: ${Number.parseFloat(result[macro]).toFixed()}g</span><br><span>Goal: ${chart_dict[macro]['goal']}g</span><hr>`;
+                    for (let i = 0; i < e.entries.length; i++) {
+                        if (e.entries[i].dataPoint.y && e.entries[i].dataSeries.name != 'Macros') {
+                            str += `<span>${e.entries[i].dataSeries.name}: ${Number.parseFloat(chart_dict[macro][(e.entries[i].dataSeries.name).toLowerCase()]['current']).toFixed()}g</span><br>`;
+                        }
+                    }
+                    return str;
+                }
             },
             title:{
                 text: "Daily Nutrition"
             },
             axisY: {
-                title: "Amount(g)"
+                title: "Daily Percent",
+                labelFormatter: function(e) {
+                    return e.value + '%';
+                }
             },
-            data: [{        
-                type: "column",  
-                showInLegend: true, 
-                legendMarkerColor: "grey",
-                tooltipContent: "<br>Protein</br>><hr>{y}",
-                dataPoints: [   
-                    { y: 300878, label: "Protein", x: 1 },   
-                    { y: 300878, label: "Fat", x: 2 },
-                    { y: 316469, label: "Carbohydrate", x: 3}
-                ]
-            },
-            /*{
-                type: "column",
-                name: "Monounsaturated Fat",
-                tooltipContent: "",
+            data: [{
+                type: "stackedColumn",
+                name: "Monounsaturated",
                 dataPoints: [
-                    { y: 100000, label: "Fat"}
+                    { y: 0, label: "Calories"},   
+                    { y: 0, label: "Protein"},   
+                    { y: chart_dict['fat']['monounsaturated']['percent'], label: "Fat"},
+                    { y: 0, label: "Carbohydrate"}
                 ]
             },
             {
                 type: "stackedColumn",
-                name: "Polyunsaturated Fat",
+                name: "Polyunsaturated",
                 dataPoints: [
-                    { y: 0, label: "Protein"},
-                    { y: 150000, label: "Fat"}
+                    { y: 0, label: "Calories"},   
+                    { y: 0, label: "Protein"},   
+                    { y: chart_dict['fat']['polyunsaturated']['percent'], label: "Fat"},
+                    { y: 0, label: "Carbohydrate"}
+                ]
+            },
+            {
+                type: "stackedColumn",
+                name: "Saturated",
+                dataPoints: [
+                    { y: 0, label: "Calories"},   
+                    { y: 0, label: "Protein"},   
+                    { y: chart_dict['fat']['saturated']['percent'], label: "Fat"},
+                    { y: 0, label: "Carbohydrate"}
                 ]
             },
             {
                 type: "stackedColumn",
                 name: "Sugar",
                 dataPoints: [
-                    { y: 0, label: "Protein"},
+                    { y: 0, label: "Calories"},   
+                    { y: 0, label: "Protein"},   
                     { y: 0, label: "Fat"},
-                    { y: 150000, label: "Carbohydrates"}
+                    { y: chart_dict['carbs']['sugar']['percent'], label: "Carbohydrate"}
                 ]
             },
             {
                 type: "stackedColumn",
                 name: "Fiber",
                 dataPoints: [
-                    { y: 0, label: "Protein"},
+                    { y: 0, label: "Calories"},   
+                    { y: 0, label: "Protein"},   
                     { y: 0, label: "Fat"},
-                    { y: 100000, label: "Carbohydrates"}
+                    { y: chart_dict['carbs']['fiber']['percent'], label: "Carbohydrate"}
                 ]
             },
-            {
-                type: "stackedColumn",
+            {        
+                type: "stackedColumn",  
+                legendMarkerColor: "grey",
+                name: "Macros",
                 dataPoints: [
-                    { y: 200000, label: "Protein"},
-                    { y: 200000, label: "Fat"},
-                    { y: 200000, label: "Carbohydrates"}
+                    { y: chart_dict['calories']['percent'], label: "Calories"},   
+                    { y: chart_dict['protein']['percent'], label: "Protein"},   
+                    { y: (chart_dict['fat']['percent'] - chart_dict['fat']['monounsaturated']['percent'] - chart_dict['fat']['polyunsaturated']['percent'] - chart_dict['fat']['saturated']['percent']), label: "Fat"},
+                    { y: (chart_dict['carbs']['percent'] - chart_dict['carbs']['sugar']['percent'] - chart_dict['carbs']['fiber']['percent']), label: "Carbohydrate"}
                 ]
-            }*/
+            }
             ]
         });
         console.log(chart);
