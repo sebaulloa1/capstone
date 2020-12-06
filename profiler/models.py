@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Breakfast(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     ingredient = models.CharField(max_length=64)
     measure = models.CharField(max_length=64)
@@ -20,6 +22,7 @@ class Breakfast(models.Model):
     potassium = models.DecimalField(max_digits=10, decimal_places=3)  
 
 class Lunch(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     ingredient = models.CharField(max_length=64)
     measure = models.CharField(max_length=64)
@@ -39,6 +42,7 @@ class Lunch(models.Model):
     potassium = models.DecimalField(max_digits=10, decimal_places=3)
 
 class Dinner(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     ingredient = models.CharField(max_length=64)
     measure = models.CharField(max_length=64)
@@ -58,6 +62,7 @@ class Dinner(models.Model):
     potassium = models.DecimalField(max_digits=10, decimal_places=3)
 
 class Snack(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     ingredient = models.CharField(max_length=64)
     measure = models.CharField(max_length=64)
@@ -77,6 +82,7 @@ class Snack(models.Model):
     potassium = models.DecimalField(max_digits=10, decimal_places=3)
 
 class Calendar(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     day = models.DateField()
     calories = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     protein = models.DecimalField(max_digits=10, decimal_places=3, default=0)
@@ -90,4 +96,12 @@ class Calendar(models.Model):
     fiber = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     sodium = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     potassium = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+
+class Goal(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    calories = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    protein = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    fat = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    carbs = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+
 

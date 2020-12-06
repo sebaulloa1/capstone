@@ -430,7 +430,8 @@ function renderChart() {
                 title: "Daily Percent",
                 labelFormatter: function(e) {
                     return e.value + '%';
-                }
+                },
+                maximum: 100
             },
             data: [{
                 type: "stackedColumn",

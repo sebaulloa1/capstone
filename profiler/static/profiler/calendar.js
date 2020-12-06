@@ -32,6 +32,18 @@ function renderCalendar() {
     // Change current date in the header
     document.querySelector('.date p').innerHTML = new Date().toDateString();
 
+    fetch(`calendar_details`, {
+        method: 'POST',
+        body: JSON.stringify({
+            month: date.getMonth(),
+            year: date.getFullYear()
+        })
+    })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+        })
+
     let days = "";
     // Create a div for every previous day
     for (let x = firstDayIndex; x > 0; x--) {

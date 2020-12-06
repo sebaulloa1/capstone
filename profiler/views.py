@@ -4,12 +4,14 @@ import datetime
 from django import forms
 import json
 from django.views.decorators.csrf import csrf_exempt
-from .models import Breakfast, Lunch, Dinner, Snack, Calendar
+from .models import Breakfast, Lunch, Dinner, Snack, Calendar, Goal
 import requests
 from django.core.exceptions import ObjectDoesNotExist
 from decimal import Decimal
 from django.urls import reverse
 from django.core import serializers
+from calendar import monthrange
+
 
 def get_token():
     data = {"grant_type": "client_credentials", "scope": "basic"}
@@ -25,6 +27,27 @@ token = get_token()
 
 def calendar(request):
     return render(request, "profiler/calendar.html")
+
+@csrf_exempt
+def calendar_details(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        detailsDict = {}
+        for dayNumber in range(1, monthrange(data['year'], data['month'])[1] + 1):
+            try:
+                print(f'{data["year"]}-{str(data["month"]).zfill(2)}-{str(dayNumber).zfill(2)}')
+                calendar = Calendar.objects.get(day=f'{data["year"]}-{str(data["month"]).zfill(2)}-{str(dayNumber).zfill(2)}')
+                goals, created = Goal.objects.get_or_create(user=request.user)
+                print(goals.calories)
+                print(created) 
+                percent = (((calendar.calories / (goals.calories + 1)) * 100) + ((calendar.protein / (1 + goals.protein) * 100) + ((calendar.fat / (1 + goals.fat)) * 100) + ((calendar.carbs / (1 + goals.carbs)) * 100))) / 4
+                detailsDict[dayNumber] = percent
+                print(calendar)
+            except ObjectDoesNotExist:
+                detailsDict[dayNumber] = 0
+        print(detailsDict)
+        return HttpResponse()
 
 def day(request, date):
     iso_date = datetime.datetime.fromtimestamp(date)
