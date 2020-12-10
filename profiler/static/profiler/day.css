@@ -25,7 +25,8 @@ div {
     grid-template-columns: 3fr 2fr;
     grid-template-rows: 1fr;
     grid-template-areas: "search list";
-    width: 95%;
+    width: 65rem;
+    
     border: 1px solid black;
     font-family: Arial, Helvetica, sans-serif;
 }

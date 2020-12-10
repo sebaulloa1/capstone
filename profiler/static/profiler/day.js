@@ -367,6 +367,7 @@ function saveMeal() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
+        renderChart()
     })
 }
 
@@ -395,7 +396,7 @@ function renderChart() {
             chart_dict[macro]['percent_remain'] = 100 - chart_dict[macro]['percent'];
             if (chart_dict[macro]['remain'] <= 0) {
                 chart_dict[macro]['remain'] = result[macro];
-                chart_dict[mcro]['percent_remain'] = 0;
+                chart_dict[macro]['percent_remain'] = 0;
             }
         }
 

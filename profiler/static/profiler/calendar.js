@@ -42,7 +42,7 @@ function renderCalendar() {
         .then(response => response.json())
         .then(result => {
             console.log(result)
-        })
+        //})
 
     let days = "";
     // Create a div for every previous day
@@ -53,9 +53,9 @@ function renderCalendar() {
     for (let i = 1; i <= lastDay; i++) {
         // Highlight current day with class "today"
         if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) {
-            days += `<a href="/"><div class="today">${i}</div></a>`
+            days += `<a href="/"><div class="today">${i}<span class="percent">${Math.round(result[i])}%</span></div></a>`
         } else {
-        days += `<a href="day/${new Date(date.getFullYear(), date.getMonth(), i).getTime() / 1000}"><div>${i}</div></a>`;
+        days += `<a href="day/${new Date(date.getFullYear(), date.getMonth(), i).getTime() / 1000}"><div>${i}<span class="percent">${Math.round(result[i])}%</span></div></a>`;
         }
     }
     // Create a div for every next day
@@ -70,6 +70,7 @@ function renderCalendar() {
         fetch(`day/${fetch_date}`)
         })
     })*/
+    })
 };
 
 // Add event listener for the next and previous month buttons

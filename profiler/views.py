@@ -11,7 +11,11 @@ from decimal import Decimal
 from django.urls import reverse
 from django.core import serializers
 from calendar import monthrange
+import inspect
 
+def lineno():
+    """Returns the current line number in our program."""
+    return inspect.currentframe().f_back.f_lineno
 
 def get_token():
     data = {"grant_type": "client_credentials", "scope": "basic"}
@@ -34,20 +38,28 @@ def calendar_details(request):
         data = json.loads(request.body)
         print(data)
         detailsDict = {}
-        for dayNumber in range(1, monthrange(data['year'], data['month'])[1] + 1):
+        for dayNumber in range(1, monthrange(data['year'], data['month'] + 1)[1] + 1):
             try:
-                print(f'{data["year"]}-{str(data["month"]).zfill(2)}-{str(dayNumber).zfill(2)}')
-                calendar = Calendar.objects.get(day=f'{data["year"]}-{str(data["month"]).zfill(2)}-{str(dayNumber).zfill(2)}')
+                calendar = Calendar.objects.get(day=f'{data["year"]}-{str(data["month"] + 1).zfill(2)}-{str(dayNumber).zfill(2)}', user=request.user)
                 goals, created = Goal.objects.get_or_create(user=request.user)
-                print(goals.calories)
-                print(created) 
-                percent = (((calendar.calories / (goals.calories + 1)) * 100) + ((calendar.protein / (1 + goals.protein) * 100) + ((calendar.fat / (1 + goals.fat)) * 100) + ((calendar.carbs / (1 + goals.carbs)) * 100))) / 4
+                percent_calories = (float(calendar.calories) / (float(goals.calories) + 0.01)) * 100
+                if percent_calories > 100:
+                    percent_calories = 100
+                percent_protein = (float(calendar.protein) / (0.01 + float(goals.protein))) * 100
+                if percent_protein > 100:
+                    percent_protein = 100
+                percent_fat = (float(calendar.fat) / (0.01 + float(goals.fat))) * 100
+                if percent_fat > 100:
+                    percent_fat = 100
+                percent_carbs = (float(calendar.carbs) / (0.01 + float(goals.carbs))) * 100
+                if percent_carbs > 100:
+                    percent_carbs = 100
+                percent = (percent_calories + percent_protein + percent_fat + percent_carbs) / 4
                 detailsDict[dayNumber] = percent
-                print(calendar)
             except ObjectDoesNotExist:
                 detailsDict[dayNumber] = 0
         print(detailsDict)
-        return HttpResponse()
+        return JsonResponse(detailsDict)
 
 def day(request, date):
     iso_date = datetime.datetime.fromtimestamp(date)
@@ -61,8 +73,8 @@ def day(request, date):
 
 def today(request):
     date = datetime.datetime.today()
-    print(date)
-    calendar = Calendar.objects.get_or_create(day=date)
+    print(date, lineno())
+    calendar = Calendar.objects.get_or_create(day=date, user=request.user)
     print(calendar)
     return render(request, "profiler/day.html", {
         "date": date,
@@ -70,7 +82,7 @@ def today(request):
     })
 
 @csrf_exempt
-def new_meal(request):
+def new_meal(request): #not used?
     if request.method == "POST":
         data = json.loads(request.body)
         meal_time = data['meal_time'].capitalize()
@@ -89,37 +101,6 @@ def new_meal(request):
             print(r.json())
        
         return HttpResponse()
-
-
-# For checking if that day (date) meals have been added in the total nutrients 
-# (have been passed to the api)
-def parse_checker(date):
-    print('parse checker working')
-    breakfast_meals = Breakfast.objects.filter(date=date)
-    for meal in breakfast_meals:
-        print('checking breakfast')
-        if not meal.nutrition_parsed:
-            return False
-    
-    lunch_meals = Lunch.objects.filter(date=date)
-    for meal in lunch_meals:
-        print('checking lunch')
-        if not meal.nutrition_parsed:
-            return False
-
-    dinner_meals = Dinner.objects.filter(date=date)
-    for meal in dinner_meals:
-        print('checking dinner')
-        if not meal.nutrition_parsed:
-            return False
-
-    snack_meals = Snack.objects.filter(date=date)
-    for meal in snack_meals:
-        print('checking snacks')
-        if not meal.nutrition_parsed:
-            return False
-    
-    return True
 
 
 def test(request):
@@ -164,20 +145,23 @@ def saveNewMeal(request):
         data = json.loads(request.body)
         print(data)
         for meal in data['meal'].values():
+            for nutrient, value in meal.items():
+                if value == None:
+                    meal[nutrient] = 0
             print(meal['name'])
-            new_meal = globals()[meal['type'].lower().capitalize()](date=datetime.datetime.fromisoformat(meal['date']), ingredient=meal['name'], measure=meal['measurement_description'], metric_measure=f"{meal['metric_serving_amount']} {meal['metric_serving_unit']}", quantity=meal['number_of_units'], calories=meal['calories'], carbs=meal['carbs'], fat=meal['fat'], protein=meal['protein'], cholesterol=meal['cholesterol'], sat_fat=meal['sat_fat'], poly_fat=meal['poly_fat'], mono_fat=meal['mono_fat'], fiber=meal['fiber'], sugars=meal['sugars'], sodium=meal['sodium'], potassium=meal['potassium'])
+            new_meal = globals()[meal['type'].lower().capitalize()](date=datetime.datetime.fromisoformat(meal['date']), ingredient=meal['name'], measure=meal['measurement_description'], metric_measure=f"{meal['metric_serving_amount']} {meal['metric_serving_unit']}", quantity=meal['number_of_units'], calories=meal['calories'], carbs=meal['carbs'], fat=meal['fat'], protein=meal['protein'], cholesterol=meal['cholesterol'], sat_fat=meal['sat_fat'], poly_fat=meal['poly_fat'], mono_fat=meal['mono_fat'], fiber=meal['fiber'], sugars=meal['sugars'], sodium=meal['sodium'], potassium=meal['potassium'], user= request.user)
             new_meal.save()
-        updateCalendar(data['meal'])
+        updateCalendar(data['meal'], request.user)
         print(next(iter(data['meal'].values())))
-        calendar = Calendar.objects.filter(day=datetime.datetime.fromisoformat(next(iter(data['meal'].values()))['date']))
+        calendar = Calendar.objects.filter(day=datetime.datetime.fromisoformat(next(iter(data['meal'].values()))['date']), user=request.user)
         print(calendar)
         calendar = serializers.serialize('json', calendar)
     return JsonResponse(calendar, safe=False)
 
-def updateCalendar(meal):
+def updateCalendar(meal, user):
     print(next(iter(meal.values())))
     date = datetime.datetime.fromisoformat(next(iter(meal.values()))['date'])
-    day = Calendar.objects.get(day=date)
+    day = Calendar.objects.get(day=date, user=user)
     for i in meal:
         print(i)
         day.calories += Decimal(meal[i]['calories'])
@@ -199,7 +183,7 @@ def getCalendar(request, date):
     
     date = datetime.date.fromtimestamp(date)
     print(date)
-    calendar = Calendar.objects.filter(day=date)
+    calendar = Calendar.objects.filter(day=date, user=request.user)
     calendar = list(calendar.values())
     print(calendar)
     return JsonResponse(calendar, safe=False)
