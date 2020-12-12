@@ -1,5 +1,24 @@
 {% extends "profiler/layout.html" %}
 {% load static %}
+
+{% block nav_date %}
+    {% if today %}
+    <a class="menu__item menu__item--active" href="{% url 'today' %}">
+        <i class="menu__icon fas fa-bookmark"></i>
+        <span class="menu__text">Today</span>
+    </a>
+    {% else %}
+    <a class="menu__item" href="{% url 'today' %}">
+        <i class="menu__icon fas fa-bookmark"></i>
+        <span class="menu__text">Today</span>
+    </a>
+    <a class="menu__item menu__item--active" href="javascript: void(0)">
+        <i class="menu__icon fas fa-bookmark"></i>
+        <span class="menu__text">{{ date | date:"l j / f / Y" }}</span>
+    </a>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <div class="day-date">
         <div>{{ date | date:"l j F, Y" }}</div>

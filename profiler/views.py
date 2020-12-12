@@ -13,6 +13,11 @@ from django.core import serializers
 from calendar import monthrange
 import inspect
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+
+
 def lineno():
     """Returns the current line number in our program."""
     return inspect.currentframe().f_back.f_lineno
@@ -29,9 +34,54 @@ def get_token():
 
 token = get_token()
 
+def login_view(request):
+    if request.method == "POST":
+
+        # Attempt to sign user in
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        # Check if authentication successful
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse("today"))
+        else:
+            return render(request, "profiler/login.html")
+    else:
+        return render(request, "profiler/login.html")
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))
+
+def register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Ensure password matches confirmation
+        password = request.POST["password"]
+        confirmation = request.POST["confirmation"]
+        if password != confirmation:
+            return render(request, "profiler/register.html")
+
+        # Attempt to create new user
+        try:
+            user = User.objects.create_user(username, email, password)
+            user.save()
+        except IntegrityError:
+            return render(request, "profiler/register.html")
+        login(request, user)
+        return HttpResponseRedirect(reverse("today"))
+    else:
+        return render(request, "profiler/register.html")
+
+@login_required(login_url='/login', redirect_field_name=None)
 def calendar(request):
     return render(request, "profiler/calendar.html")
 
+@login_required(login_url='/login', redirect_field_name=None)
 @csrf_exempt
 def calendar_details(request):
     if request.method == 'POST':
@@ -61,16 +111,19 @@ def calendar_details(request):
         print(detailsDict)
         return JsonResponse(detailsDict)
 
+@login_required(login_url='/login', redirect_field_name=None)
 def day(request, date):
     iso_date = datetime.datetime.fromtimestamp(date)
     print(iso_date)
-    calendar = Calendar.objects.get_or_create(day=iso_date)
-    print(calendar[0].protein)
+    calendar = Calendar.objects.get_or_create(day=iso_date, user=request.user)
+    print(calendar[0].protein, lineno())
     return render(request, "profiler/day.html", {
         "date": iso_date,
-        "calendar": calendar[0]
+        "calendar": calendar[0],
+        "today": False
     })
 
+@login_required(login_url='/login', redirect_field_name=None)
 def today(request):
     date = datetime.datetime.today()
     print(date, lineno())
@@ -78,7 +131,8 @@ def today(request):
     print(calendar)
     return render(request, "profiler/day.html", {
         "date": date,
-        "calendar": calendar[0]
+        "calendar": calendar[0],
+        "today": True
     })
 
 @csrf_exempt
@@ -183,7 +237,22 @@ def getCalendar(request, date):
     
     date = datetime.date.fromtimestamp(date)
     print(date)
-    calendar = Calendar.objects.filter(day=date, user=request.user)
-    calendar = list(calendar.values())
+    calendar = list(Calendar.objects.filter(day=date, user=request.user).values())
+    goals = list(Goal.objects.filter(user=request.user).values())
     print(calendar)
-    return JsonResponse(calendar, safe=False)
+    return JsonResponse({
+        "calendar": calendar,
+        "goals": goals
+    }, safe=False)
+
+def set_goal(request):
+    if request.method == "GET":
+        try:
+            Goal.objects.get(user=request.user)
+            return HttpResponseRedirect(reverse("today"))
+        except ObjectDoesNotExist:
+            return render(request, "profiler/set_goal.html")
+    else:
+        goal = Goal(user = request.user, calories=request.POST["calories"], protein=request.POST["protein"], fat=request.POST["fat"], carbs=request.POST["carbs"])
+        goal.save()
+        return HttpResponseRedirect(reverse("today"))

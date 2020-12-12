@@ -381,30 +381,25 @@ function renderChart() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
-        result = result[0];
         let chart_dict = {'protein': {}, 'fat': {}, 'carbs': {}, 'calories': {}};
-        // GOALS
-        chart_dict['protein']['goal'] = 93;
-        chart_dict['fat']['goal'] = 201;
-        chart_dict['carbs']['goal'] = 30;
-        chart_dict['calories']['goal'] = 2304;
-        // GOALS
-        
+        goals = result["goals"][0]
+        calendar = result["calendar"][0]        
         for (macro in chart_dict) {
-            chart_dict[macro]['remain'] = chart_dict[macro]['goal'] - result[macro];
-            chart_dict[macro]['percent'] = (result[macro] / chart_dict[macro]['goal']) * 100;
+            chart_dict[macro]['goal'] = Math.round(goals[macro])
+            chart_dict[macro]['remain'] = goals[macro] - calendar[macro];
+            chart_dict[macro]['percent'] = (calendar[macro] / goals[macro]) * 100;
             chart_dict[macro]['percent_remain'] = 100 - chart_dict[macro]['percent'];
             if (chart_dict[macro]['remain'] <= 0) {
-                chart_dict[macro]['remain'] = result[macro];
+                chart_dict[macro]['remain'] = calendar[macro];
                 chart_dict[macro]['percent_remain'] = 0;
             }
         }
 
-        chart_dict['fat']['monounsaturated'] = {'current': result['mono_fat'], 'percent': (result['mono_fat'] / chart_dict['fat']['goal']) * 100};
-        chart_dict['fat']['polyunsaturated'] = {'current': result['poly_fat'], 'percent': (result['poly_fat'] / chart_dict['fat']['goal']) * 100};
-        chart_dict['fat']['saturated'] = {'current': result['sat_fat'], 'percent': (result['sat_fat'] / chart_dict['fat']['goal']) * 100};
-        chart_dict['carbs']['sugar'] = {'current': result['sugar'], 'percent': (result['sugar'] / chart_dict['carbs']['goal']) * 100};
-        chart_dict['carbs']['fiber'] = {'current': result['fiber'], 'percent': (result['fiber'] / chart_dict['carbs']['goal']) * 100};
+        chart_dict['fat']['monounsaturated'] = {'current': calendar['mono_fat'], 'percent': (calendar['mono_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['fat']['polyunsaturated'] = {'current': calendar['poly_fat'], 'percent': (calendar['poly_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['fat']['saturated'] = {'current': calendar['sat_fat'], 'percent': (calendar['sat_fat'] / chart_dict['fat']['goal']) * 100};
+        chart_dict['carbs']['sugar'] = {'current': calendar['sugar'], 'percent': (calendar['sugar'] / chart_dict['carbs']['goal']) * 100};
+        chart_dict['carbs']['fiber'] = {'current': calendar['fiber'], 'percent': (calendar['fiber'] / chart_dict['carbs']['goal']) * 100};
 
         console.log(chart_dict);
         var chart = new CanvasJS.Chart("chartContainer", {
@@ -415,7 +410,7 @@ function renderChart() {
                 contentFormatter: function(e) {
                     let macro = (e.entries[0].dataPoint.label).toLowerCase();
                     if (macro == 'carbohydrate') {macro = 'carbs'};
-                    let str = `${e.entries[0].dataPoint.label} (${Math.round(chart_dict[macro]['percent'])}%)<br><span>Current: ${Number.parseFloat(result[macro]).toFixed()}g</span><br><span>Goal: ${chart_dict[macro]['goal']}g</span><hr>`;
+                    let str = `${e.entries[0].dataPoint.label} (${Math.round(chart_dict[macro]['percent'])}%)<br><span>Current: ${Number.parseFloat(calendar[macro]).toFixed()}g</span><br><span>Goal: ${chart_dict[macro]['goal']}g</span><hr>`;
                     for (let i = 0; i < e.entries.length; i++) {
                         if (e.entries[i].dataPoint.y && e.entries[i].dataSeries.name != 'Macros') {
                             str += `<span>${e.entries[i].dataSeries.name}: ${Number.parseFloat(chart_dict[macro][(e.entries[i].dataSeries.name).toLowerCase()]['current']).toFixed()}g</span><br>`;

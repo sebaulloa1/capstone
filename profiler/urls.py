@@ -12,5 +12,10 @@ urlpatterns = [
     path("foods_search/<str:food_name>/<int:page_num>", views.fatSecretSearch, name="foods_search"),
     path("food_get/<int:id>", views.fatSecretGet, name="food_get"),
     path("save_meal", views.saveNewMeal, name="saveNewMeal"),
-    path("get_calendar/<int:date>", views.getCalendar, name="get_calendar") 
+    path("get_calendar/<int:date>", views.getCalendar, name="get_calendar"),
+
+    path("login", views.login_view, name="login"),
+    path("logout", views.logout_view, name="logout"),
+    path("register", views.register, name="register"),
+    path("set_goal", views.set_goal, name="set_goal")
 ]

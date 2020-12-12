@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+
 class Breakfast(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
@@ -99,9 +101,9 @@ class Calendar(models.Model):
 
 class Goal(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    calories = models.DecimalField(max_digits=10, decimal_places=3, default=0)
-    protein = models.DecimalField(max_digits=10, decimal_places=3, default=0)
-    fat = models.DecimalField(max_digits=10, decimal_places=3, default=0)
-    carbs = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    calories = models.DecimalField(max_digits=10, decimal_places=3)
+    protein = models.DecimalField(max_digits=10, decimal_places=3)
+    fat = models.DecimalField(max_digits=10, decimal_places=3)
+    carbs = models.DecimalField(max_digits=10, decimal_places=3)
 
 

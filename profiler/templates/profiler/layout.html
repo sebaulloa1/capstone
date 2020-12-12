@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang='en'>
     <head>
-        <title></title>
+        <title>Profiler</title>
         <link href="{% static 'profiler/layout.css' %}" rel="stylesheet">
         <script src="https://kit.fontawesome.com/498d15032c.js" crossorigin="anonymous"></script>
         <link href="{% static 'profiler/calendar_style.css' %}" rel="stylesheet">
@@ -21,28 +21,16 @@
                 <div class="avatar__img">
                     <!-- <img src="https://picsum.photos/70" alt="avatar"> -->
                 </div>
-                <div class="avatar__name">John Smith</div>
+                <div class="avatar__name">{{ user.username }}</div>
                 </div>
                 <nav class="menu">
-                    <a class="menu__item menu__item--active" href="{% url 'today' %}">
-                        <i class="menu__icon fas fa-bookmark"></i>
-                        <span class="menu__text">day details</span>
-                    </a>
-                    <a class="menu__item" href="#">
-                        <i class="menu__icon fas fa-envelope"></i>
-                        <span class="menu__text">messages</span>
-                    </a>
-                    <a class="menu__item" href="#">
-                        <i class="menu__icon fas fa-list"></i>
-                        <span class="menu__text">workout</span>
-                    </a>
+                    {% block nav_date %} {% endblock %}
                     <a class="menu__item" href="{% url 'calendar' %}">
                         <i class="menu__icon fas fa-calendar"></i>
                         <span class="menu__text">calendar</span>
                     </a>
-                    <a class="menu__item" href="{% url 'test' %}">
-                        <i class="menu__icon fas fa-sliders"></i>
-                        <span class="menu__text">measurements</span>
+                    <a class="menu__item" href="{% url 'logout' %}">
+                        <span class="menu__text">log out</span>
                     </a>
                 </nav>
             </sidebar>
