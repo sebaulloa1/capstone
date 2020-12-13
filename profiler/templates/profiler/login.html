@@ -1,25 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
         <title>Login Profiler</title>
+        <link href="{% static 'profiler/login.css' %}" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/498d15032c.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <h2>Login</h2>
-
-        <form action="{% url 'login' %}" method="post">
+        <form class="form" action="{% url 'login' %}" method="post">
             {% csrf_token %}
-            <div class="form-group">
-                <input autofocus class="form-control" type="text" name="username" placeholder="Username" style="width:400px;">
+            <i class="fas fa-user-circle"></i>
+            
+            <label for="username">Username</label>
+            <input autofocus class="form-input" type="text" name="username" placeholder="Username">
+        
+        
+            <label for="password">Password</label>
+            <input class="form-input" type="password" name="password" placeholder="Password">
+        
+            <input class="btn" type="submit" value="Login">
+            
+            <div class="options">
+                <span>Don't have an account? </span><a href="{% url 'register' %}">Register here</a>
             </div>
-            <div class="form-group">
-                <input class="form-control" type="password" name="password" placeholder="Password" style="width:400px;">
-            </div>
-            <input class="btn btn-dark" type="submit" value="Login">
+        
         </form>
-
         <a href="{% url "social:begin" "google-oauth2" %}">Google+</a>
-
-        Don't have an account? <a href="{% url 'register' %}">Register here.</a>
-
+        
     </body>
+    
 </html>

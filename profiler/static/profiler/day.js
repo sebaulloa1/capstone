@@ -404,7 +404,7 @@ function renderChart() {
         console.log(chart_dict);
         var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,
-            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
             toolTip: {
                 shared: true,
                 contentFormatter: function(e) {

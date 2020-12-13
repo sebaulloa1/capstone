@@ -247,11 +247,14 @@ def getCalendar(request, date):
 
 def set_goal(request):
     if request.method == "GET":
+        return render(request, "profiler/set_goal.html")
+        """
         try:
             Goal.objects.get(user=request.user)
             return HttpResponseRedirect(reverse("today"))
         except ObjectDoesNotExist:
             return render(request, "profiler/set_goal.html")
+        """
     else:
         goal = Goal(user = request.user, calories=request.POST["calories"], protein=request.POST["protein"], fat=request.POST["fat"], carbs=request.POST["carbs"])
         goal.save()
