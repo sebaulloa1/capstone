@@ -23,7 +23,7 @@
     <div class="day-date">
         <div>{{ date | date:"l j F, Y" }}</div>
     </div>
-    <div id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
+    <div style="display: none;" id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
     <button class="add-meal-btn" data-meals="breakfast">Add a breakfast</button>
     <button class="add-meal-btn" data-meals="lunch">Add a lunch</button>
     <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>

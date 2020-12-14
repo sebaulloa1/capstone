@@ -20,8 +20,17 @@ body {
 }
 
 h2 {
-    font-size: 24px;
+    font-family: "Poppins", sans-serif;
+    font-size: 30px;
     font-weight: bold;
+}
+
+.description {
+    font-family: "Poppins", sans-serif;
+    font-size: 18px;
+}
+
+.description-container {
     margin-bottom: 15px;
 }
 
@@ -65,6 +74,12 @@ h2 {
     border-left: solid 8px rgba(237, 84, 84, 0.5);
     border-right: solid 8px rgba(237, 84, 84, 0.5);
     box-shadow: 0 0 100px rgba(237, 84, 84, 0.5);
+}
+
+.input-container {
+    width: 70%;
+    text-align: right;
+    margin-right: 30%;
 }
 
 @media screen and (max-width: 500px) {
