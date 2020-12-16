@@ -19,7 +19,7 @@ let new_meal_dict = {};
 function addMealStart(meal) {
     console.log('clicked', meal);
     const add_meal_container = document.querySelector('.add-meal-container');
-    add_meal_container.style.display = "grid";
+    add_meal_container.style.display = "block";
     const new_meal_list_container = document.querySelector('.new-meal-list-container');
     new_meal_list_container.innerHTML = `
         <h2>New <span id="meal">${meal.toUpperCase()}</span></h2>
@@ -367,6 +367,8 @@ function saveMeal() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
+        new_meal_dict = {};
+        document.querySelector('.new-meal-list').innerHTML = '';
         renderChart()
     })
 }

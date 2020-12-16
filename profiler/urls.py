@@ -13,6 +13,7 @@ urlpatterns = [
     path("food_get/<int:id>", views.fatSecretGet, name="food_get"),
     path("save_meal", views.saveNewMeal, name="saveNewMeal"),
     path("get_calendar/<int:date>", views.getCalendar, name="get_calendar"),
+    path("account", views.account, name="account"),
 
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),

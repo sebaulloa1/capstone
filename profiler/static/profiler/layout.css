@@ -100,7 +100,9 @@ sidebar {
 }
 
 :root {
-    --red: #ED5454;
+    --red: rgb(240, 85, 85);
+    --red2: rgb(200, 70, 70);
+    --red3: rgb(150, 80, 80);
 }
   
 body {

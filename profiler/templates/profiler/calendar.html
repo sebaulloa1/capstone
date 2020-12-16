@@ -1,5 +1,21 @@
 {% extends "profiler/layout.html" %}
 {% load static %}
+
+{% block nav_date %}
+    <a class="menu__item" href="{% url 'today' %}">
+        <i class="menu__icon fas fa-bookmark"></i>
+        <span class="menu__text">Today</span>
+    </a>
+    <a class="menu__item menu__item--active" href="{% url 'calendar' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">calendar</span>
+    </a>
+    <a class="menu__item" href="{% url 'account' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">account</span>
+    </a>
+{% endblock %}
+
 {% block body %}
     <div class="calendar-container">
         <div class="calendar">

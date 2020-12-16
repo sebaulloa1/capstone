@@ -7,6 +7,14 @@
         <i class="menu__icon fas fa-bookmark"></i>
         <span class="menu__text">Today</span>
     </a>
+    <a class="menu__item" href="{% url 'calendar' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">calendar</span>
+    </a>
+    <a class="menu__item" href="{% url 'account' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">account</span>
+    </a>
     {% else %}
     <a class="menu__item" href="{% url 'today' %}">
         <i class="menu__icon fas fa-bookmark"></i>
@@ -15,6 +23,14 @@
     <a class="menu__item menu__item--active" href="javascript: void(0)">
         <i class="menu__icon fas fa-bookmark"></i>
         <span class="menu__text">{{ date | date:"l j / f / Y" }}</span>
+    </a>
+    <a class="menu__item" href="{% url 'calendar' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">calendar</span>
+    </a>
+    <a class="menu__item" href="{% url 'account' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">account</span>
     </a>
     {% endif %}
 {% endblock %}

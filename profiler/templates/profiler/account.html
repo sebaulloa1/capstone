@@ -1,0 +1,60 @@
+{% extends "profiler/layout.html" %}
+{% load static %}
+
+{% block nav_date %}
+    <a class="menu__item" href="{% url 'today' %}">
+        <i class="menu__icon fas fa-bookmark"></i>
+        <span class="menu__text">Today</span>
+    </a>
+    <a class="menu__item" href="{% url 'calendar' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">calendar</span>
+    </a>
+    <a class="menu__item menu__item--active" href="{% url 'account' %}">
+        <i class="menu__icon fas fa-calendar"></i>
+        <span class="menu__text">account</span>
+    </a>
+{% endblock %}
+
+{% block body %}
+
+    <div>
+        <ul>
+            <li>Protein: <span id="protein">{{ goals.protein }}</span></li>
+            <li>Fat: {{ goals.fat }}</li>
+            <li>Carbohydrates: {{ goals.carbs }}</li>
+            <li>Calories: {{ goals.calories }}</li>            
+        </ul>
+    </div>
+
+    <div class="change-goal-container">
+        <h2>Change your Goals</h2>
+        <div class="change-goal-title">
+            <span>Set your macros daily goal</span>
+        </div>
+        <form class="form" id="change-goal-form">
+            <div class="input-container">
+                <label for="calories">Calories:</label>
+                <input autofocus class="form-input" type="text" name="calories" id="calories">
+            </div>
+            <div class="input-container">
+                <label for="protein">Protein:</label>
+                <input autofocus class="form-input" type="text" name="protein" id="protein">
+            </div>
+            <div class="input-container">
+                <label for="fat">Fat:</label>
+                <input autofocus class="form-input" type="text" name="fat" id="fat">
+            </div>
+            <div class="input-container">
+                <label for="carbs">Carbohydrates:</label>
+                <input autofocus class="form-input" type="text" name="carbs" id="carbs">
+            </div>
+            <input class="btn" type="submit" value="Change">
+        </form>
+    </div>
+
+    
+{% endblock %}
+{% block script %}
+<script src="{% static 'profiler/account.js' %}"></script>
+{% endblock %}

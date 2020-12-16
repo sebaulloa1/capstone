@@ -259,3 +259,20 @@ def set_goal(request):
         goal = Goal(user = request.user, calories=request.POST["calories"], protein=request.POST["protein"], fat=request.POST["fat"], carbs=request.POST["carbs"])
         goal.save()
         return HttpResponseRedirect(reverse("today"))
+
+@csrf_exempt
+def account(request):
+    if request.method == "GET":
+        goals = Goal.objects.get(user=request.user)
+        return render(request, "profiler/account.html", {
+            'goals': goals
+        })
+    else:
+        data = json.loads(request.body)
+        print(data)
+        goals = data['goals']
+        new_goals = Goal(user=request.user, calories=goals['calories'], protein=goals['protein'], fat=goals['fat'], carbs=goals['carbs'])
+        new_goals.save()
+        return JsonResponse({
+            "goals": list(new_goals.values())
+        })
