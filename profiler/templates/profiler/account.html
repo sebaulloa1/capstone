@@ -20,10 +20,10 @@
 
     <div>
         <ul>
-            <li>Protein: <span id="protein">{{ goals.protein }}</span></li>
-            <li>Fat: {{ goals.fat }}</li>
-            <li>Carbohydrates: {{ goals.carbs }}</li>
-            <li>Calories: {{ goals.calories }}</li>            
+            <li>Protein: <span class="goal-protein">{{ goals.protein }}</span></li>
+            <li>Fat: <span class="goal-fat">{{ goals.fat }}</span></li>
+            <li>Carbohydrates: <span class="goal-carbs">{{ goals.carbs }}</span></li>
+            <li>Calories: <span class="goal-calories">{{ goals.calories }}</span></li>            
         </ul>
     </div>
 
@@ -35,24 +35,45 @@
         <form class="form" id="change-goal-form">
             <div class="input-container">
                 <label for="calories">Calories:</label>
-                <input autofocus class="form-input" type="text" name="calories" id="calories">
+                <input class="form-input" type="text" name="calories" id="calories">
             </div>
             <div class="input-container">
                 <label for="protein">Protein:</label>
-                <input autofocus class="form-input" type="text" name="protein" id="protein">
+                <input class="form-input" type="text" name="protein" id="protein">
             </div>
             <div class="input-container">
                 <label for="fat">Fat:</label>
-                <input autofocus class="form-input" type="text" name="fat" id="fat">
+                <input class="form-input" type="text" name="fat" id="fat">
             </div>
             <div class="input-container">
                 <label for="carbs">Carbohydrates:</label>
-                <input autofocus class="form-input" type="text" name="carbs" id="carbs">
+                <input class="form-input" type="text" name="carbs" id="carbs">
             </div>
             <input class="btn" type="submit" value="Change">
         </form>
     </div>
 
+    <div class="change-pass-container">
+        <h2>Change your password</h2>
+        <div class="change-pass-title">
+            <span>Change your password</span>
+        </div>
+        <form class="form" id="change-pass-form">
+            <div class="input-container">
+                <label for="current-pass">Current password:</label>
+                <input class="form-input" type="password" name="current-pass" id="current-pass">
+            </div>
+            <div class="input-container">
+                <label for="new-pass">New password:</label>
+                <input class="form-input" type="password" name="new-pass" id="new-pass">
+            </div>
+            <div class="input-container">
+                <label for="new-pass-confirmation">New password confirmation:</label>
+                <input class="form-input" type="password" name="new-pass-confirmation" id="new-pass-confirmation">
+            </div>
+            <input class="btn" type="submit" value="Change">
+        </form>
+    </div>
     
 {% endblock %}
 {% block script %}

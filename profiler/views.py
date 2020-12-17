@@ -4,16 +4,17 @@ import datetime
 from django import forms
 import json
 from django.views.decorators.csrf import csrf_exempt
-from .models import Breakfast, Lunch, Dinner, Snack, Calendar, Goal
+from .models import Breakfast, Lunch, Dinner, Snack, Calendar, Goal, User
 import requests
 from django.core.exceptions import ObjectDoesNotExist
 from decimal import Decimal
 from django.urls import reverse
 from django.core import serializers
+from django.forms.models import model_to_dict
 from calendar import monthrange
 import inspect
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
@@ -76,6 +77,22 @@ def register(request):
         return HttpResponseRedirect(reverse("today"))
     else:
         return render(request, "profiler/register.html")
+
+@csrf_exempt
+def change_pass(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        pass_info = data['change_pass']
+        user = authenticate(request, username=request.user.username, password=pass_info['current'])
+        if user is not None:
+            u = User.objects.get(username=request.user.username)
+            u.set_password(pass_info['new'])
+            u.save()
+            update_session_auth_hash(request, u)
+            return HttpResponse('Password changed')
+        else:
+            return HttpResponse('Invalid current password')
 
 @login_required(login_url='/login', redirect_field_name=None)
 def calendar(request):
@@ -260,6 +277,7 @@ def set_goal(request):
         goal.save()
         return HttpResponseRedirect(reverse("today"))
 
+@login_required(login_url='/login', redirect_field_name=None)
 @csrf_exempt
 def account(request):
     if request.method == "GET":
@@ -270,9 +288,14 @@ def account(request):
     else:
         data = json.loads(request.body)
         print(data)
-        goals = data['goals']
-        new_goals = Goal(user=request.user, calories=goals['calories'], protein=goals['protein'], fat=goals['fat'], carbs=goals['carbs'])
-        new_goals.save()
+        user = request.user
+        new_goals = data['goals']
+        goals = Goal.objects.get(user=user)
+        print(goals.calories)
+        #goals.calories = new_goals['calories']
+        for macro in new_goals:
+            setattr(goals, macro, new_goals[macro])
+        goals.save()
         return JsonResponse({
-            "goals": list(new_goals.values())
+            "goals": model_to_dict(goals)
         })

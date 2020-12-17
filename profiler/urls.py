@@ -18,5 +18,6 @@ urlpatterns = [
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
-    path("set_goal", views.set_goal, name="set_goal")
+    path("set_goal", views.set_goal, name="set_goal"),
+    path("password_change", views.change_pass, name="change_pass")
 ]
