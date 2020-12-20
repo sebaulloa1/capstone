@@ -1,0 +1,97 @@
+.main-container {
+    width: 100%;
+    display: table;
+}
+
+.form-container {
+    position: relative;
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left;
+    width: calc(50% - 12px);
+    border: 1px solid rgba(0,0,0,.07);
+}
+
+@media (max-width: 992px) {
+    .form-container {
+        width: calc(100% - 12px);
+    }  
+}
+
+.form-heading {
+    padding: 20px 20px 7px;
+    position: relative;
+}
+
+.form-heading h2 {
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #333;
+}
+
+.input-container {
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 10px;
+    display: table;
+    width: 100%;
+    padding-top: 10px;
+    color: #505050;
+}
+
+.input-container label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.8;
+    text-align: right;
+    width: 40%;
+    padding-top: 7px;
+    position: relative;
+    float: left;
+}
+
+.input-div {
+    width: 60%;
+    position: relative;
+    float: left;
+    text-align: center;
+}
+
+.form-input {
+    border: 1px solid rgba(0,0,0,.07);
+    color: #2c2c2c;
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 60px;
+    text-align: center;
+}
+
+.btn-container {
+    padding: 10px;
+    display: table;
+    width: 100%;
+}
+
+.btn {
+    border: 1px solid #f0f0f0;
+    background-color: transparent;
+    color: var(--red);
+    border-color: var(--red);
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+    width: calc(100% - 20px);
+    display: block;
+    padding: 6px 12px;
+    position: relative;
+    cursor: pointer;
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: var(--red);
+    border-color: var(--red);
+}
+
