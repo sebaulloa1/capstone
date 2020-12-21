@@ -12,7 +12,7 @@
         <span class="menu__text">calendar</span>
     </a>
     <a class="menu__item" href="{% url 'account' %}">
-        <i class="menu__icon fas fa-calendar"></i>
+        <i class="menu__icon fas fa-user-circle"></i>
         <span class="menu__text">account</span>
     </a>
     {% else %}
@@ -29,7 +29,7 @@
         <span class="menu__text">calendar</span>
     </a>
     <a class="menu__item" href="{% url 'account' %}">
-        <i class="menu__icon fas fa-calendar"></i>
+        <i class="menu__icon fas fa-user-circle"></i>
         <span class="menu__text">account</span>
     </a>
     {% endif %}
@@ -57,14 +57,13 @@
         </div>
     </div>
 
-    <div>
-        <ul>
-            <li>Protein: <span id="protein">{{ calendar.protein }}</span></li>
-            <li>Fat: {{ calendar.fat }}</li>
-            <li>Carbohydrates: {{ calendar.carbs }}</li>
-            <li>Calories: {{ calendar.calories }}</li>
-            <li>Fiber: {{ calendar.fiber }}</li>
-            
+    <div class="macros-container">
+        <ul class="macros-ul">
+            <li class="macros-li">Protein: {{ calendar.protein }}</li>
+            <li class="macros-li">Fat: {{ calendar.fat }}</li>
+            <li class="macros-li">Carbohydrates: {{ calendar.carbs }}</li>
+            <li class="macros-li">Calories: {{ calendar.calories }}</li>
+            <li class="macros-li">Fiber: {{ calendar.fiber }}</li>
         </ul>
     </div>
     

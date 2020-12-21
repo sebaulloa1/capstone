@@ -18,6 +18,20 @@ html {
         grid-template-rows: 1fr;
         grid-template-areas: "sidebar content";
     }
+    sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 200px;
+        padding-right: 0;
+    }
+}
+
+@media screen and (max-width: 849px) {
+    sidebar {
+        padding-right: 35px;
+    }
 }
 
 main {
@@ -52,8 +66,10 @@ sidebar {
     margin-right: 1em;
 }
 
-.avatar__img > img {
+.avatar__img > i {
     display: block;
+    font-size: 5rem;
+
 }
 
 .menu {
@@ -151,7 +167,7 @@ main {
 }
 
 .menu__icon {
-    font-size: 2rem;
+    font-size: 3rem;
 }
 
 @media screen and (min-width: 850px) {

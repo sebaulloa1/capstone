@@ -106,6 +106,7 @@ transform: translate(0, 0.375em);
     margin-top: 30px;
     /*border: 1px solid black;*/
     font-family: Arial, Helvetica, sans-serif;
+    
 }
 
 .new-meal-list-container {
@@ -115,6 +116,7 @@ transform: translate(0, 0.375em);
     color: black;
     width: 200px;
     float: left;
+    position: relative;
 }
 
 .meal-list-details {
@@ -127,6 +129,7 @@ transform: translate(0, 0.375em);
     width: 400px;
     /*border: 1px solid black;*/
     float: left;
+    position: relative;
 }
 
 #food-search-form {
@@ -325,4 +328,18 @@ a.serving-selected, .selected{
 .quantity-input {
     width: 5rem;
     margin-right: 10px;
+}
+
+.macros-container {
+    width: 100%;
+}
+
+.maros-ul {
+    padding: 5px 15px;
+    display: table;
+}
+
+.maros-li {
+    display: block !important;
+    float: left;
 }

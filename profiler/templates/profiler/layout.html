@@ -22,6 +22,7 @@
                 <div class="logo"></div>
                 <div class="avatar">
                 <div class="avatar__img">
+                    <i class="fas fa-user-circle"></i>
                     <!-- <img src="https://picsum.photos/70" alt="avatar"> -->
                 </div>
                 <div class="avatar__name">{{ user.username }}</div>
@@ -29,7 +30,11 @@
                 <nav class="menu">
                     {% block nav_date %} {% endblock %}
                     <a class="menu__item" href="{% url 'logout' %}">
+                        <i class="menu__icon fas fa-sign-out-alt"></i>
                         <span class="menu__text">log out</span>
+                    </a>
+                    <a href="https://platform.fatsecret.com">
+                        <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
                     </a>
                 </nav>
             </sidebar>
