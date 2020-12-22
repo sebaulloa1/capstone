@@ -21,13 +21,15 @@
             <input class="form-input" type="password" name="password" placeholder="Password">
         
             <input class="btn" type="submit" value="Login">
-            
+            <a class="google-login" href="{% url "social:begin" "google-oauth2" %}">
+                <img src="{% static 'profiler/google_login_btn.png' %}" alt="Google Login">
+            </a>
             <div class="options">
                 <span>Don't have an account? </span><a href="{% url 'register' %}">Register here</a>
             </div>
         
         </form>
-        <a href="{% url "social:begin" "google-oauth2" %}">Google+</a>
+        
         
     </body>
     

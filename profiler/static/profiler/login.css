@@ -85,7 +85,7 @@ body {
 .form .options {
     color: rgb(160, 160, 160);
     font-size: 14px;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .form .options a{
@@ -104,4 +104,13 @@ body {
     .form .btn {
       width: 100%;
     }
+}
+
+.google-login img {
+    margin-top: 10px;
+    transition: transform .3s ease-out;
+}
+
+.google-login img:hover {
+    transform: translate(0, -5px);
 }

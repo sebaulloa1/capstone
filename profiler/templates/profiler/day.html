@@ -39,11 +39,21 @@
     <div class="day-date">
         <div>{{ date | date:"l j F, Y" }}</div>
     </div>
+
+    <div class="macros-tb">
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Calories: {{ calendar.calories }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Protein: {{ calendar.protein }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Fat: {{ calendar.fat }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: {{ calendar.carbs }}</div>
+    </div>
     <div style="display: none;" id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
-    <button class="add-meal-btn" data-meals="breakfast">Add a breakfast</button>
-    <button class="add-meal-btn" data-meals="lunch">Add a lunch</button>
-    <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
-    <button class="add-meal-btn" data-meals="snack">Add a snack</button>
+    <div class="btn-container">   
+        <button class="add-meal-btn" data-meals="breakfast">Add a breakfast</button>
+        <button class="add-meal-btn" data-meals="lunch">Add a lunch</button>
+        <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
+        <button class="add-meal-btn" data-meals="snack">Add a snack</button>
+    </div> 
+    
 
     <div class="add-meal-container" style="display: none;">
         <div id="food-search-container">
@@ -57,17 +67,8 @@
         </div>
     </div>
 
-    <div class="macros-container">
-        <ul class="macros-ul">
-            <li class="macros-li">Protein: {{ calendar.protein }}</li>
-            <li class="macros-li">Fat: {{ calendar.fat }}</li>
-            <li class="macros-li">Carbohydrates: {{ calendar.carbs }}</li>
-            <li class="macros-li">Calories: {{ calendar.calories }}</li>
-            <li class="macros-li">Fiber: {{ calendar.fiber }}</li>
-        </ul>
-    </div>
     
-    <div id="chartContainer" style="height: 300px; width: 65rem;"></div>
+    <div id="chartContainer" class="fatsecret-chart"></div>
     <!-- <script src="https://platform.fatsecret.com/js?key=8afd07b7355c41e3813a80e3008c127e&auto_load=true"></script> -->
 {% endblock %}
 {% block script %}

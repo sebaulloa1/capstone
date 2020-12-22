@@ -10,8 +10,10 @@
 }
 
 .calendar {
-    width: 45rem;
-    height: 52rem;
+    /*width: 45rem;
+    height: 52rem;*/
+    width: 65rem;
+    height: auto;
     background-color: #222227;
     box-shadow: 0 .5rem 3rem rgba(0, 0, 0, 0.4);
 }
@@ -19,7 +21,7 @@
 .month {
     width: 100%;
     height: 12rem;
-    background-color: #167e56;
+    background-color: var(--red);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -69,7 +71,6 @@
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(5, 1fr);
     width: 100%;
-    
 }
 .days a {
     text-decoration: none;
@@ -79,13 +80,16 @@
     display: flex;
     width: 100%;
     font-size: 1.4rem;
-    margin: 0.3rem;
+    font-weight: 300;
+    padding: 0.3rem;
     justify-content: center;
     align-items: center;
     text-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.5);
     height: 5rem;
     transition: background-color 0.2s;
     box-sizing: border-box;
+    border: 0.5px solid gray;
+    border-collapse: collapse;
 }
 
 .days div:hover {
@@ -99,10 +103,32 @@
 }
 
 .today {
-    background-color: #167e56;
+    background-color: var(--red);
 }
 
 .percent {
-    font-size: 0.8rem;
-    
+    font-size: 0.95rem;
+    align-self: baseline;
+    letter-spacing: 0.8px;
+    font-weight: 200;
+    position: relative;
+    left: 20%;
+}
+
+@media (max-width: 850px) {
+    .calendar-container {
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        color: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .calendar {
+        width: 100%;
+        height: auto;
+        background-color: #222227;
+        box-shadow: 0 .5rem 3rem rgba(0, 0, 0, 0.4);
+    }
 }

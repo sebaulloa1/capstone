@@ -16,7 +16,7 @@ div {
     position: relative;
     align-items: center;
     border-radius: 30px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .day-date div {
@@ -40,7 +40,7 @@ div {
     text-align: center;
     border-radius: 3px;
     background-color: transparent;
-
+    margin-right: 10px;
 }
 
 .add-meal-btn:hover {
@@ -96,6 +96,32 @@ transform: translate(0, 0.375em);
     transform: translate3d(0, 0, -1em);
     box-shadow: 0 0 0 2px blue, 0 0.25em 0 0 var(--red3);
 }*/
+
+.btn-container {
+    width: auto;
+}
+
+.macros-tb {
+    width: 100%;
+    display: table;
+    
+}
+
+.macros-ti {
+    width: 25%;
+    float: left;
+    text-align: center;
+    font-size: 13px;
+    color: #000000;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+.macros-dot {
+    line-height: 1.5;
+    font-size: 8px;
+    vertical-align: middle;
+}
 
 .add-meal-container {
     /*display: grid;
@@ -330,16 +356,14 @@ a.serving-selected, .selected{
     margin-right: 10px;
 }
 
-.macros-container {
-    width: 100%;
+.fatsecret-chart {
+    width: 60%;
+    margin-top: 30px;
+    height: auto;
 }
 
-.maros-ul {
-    padding: 5px 15px;
-    display: table;
-}
-
-.maros-li {
-    display: block !important;
-    float: left;
+@media (max-width: 850px) {
+    .fatsecret-chart {
+        width: 100%;
+    }
 }

@@ -32,6 +32,9 @@ html {
     sidebar {
         padding-right: 35px;
     }
+    .menu__atributes img {
+        display: none;
+    }
 }
 
 main {
@@ -87,6 +90,23 @@ sidebar {
     display: none;
 }
 
+.menu__atributes {
+    position: absolute;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+    transition: transform .3s ease-out;
+}
+
+.menu__atributes img {
+    height: 70%;
+    width: 70%;
+}
+
+.menu__atributes:hover {
+    transform: translate(0, -5px);
+}
+
 @media screen and (min-width: 850px) {
     sidebar {
         grid-template-areas: "logo"
@@ -112,6 +132,10 @@ sidebar {
     }
     .avatar__img > img {
         border-radius: 50%;
+    }
+    .menu__atributes img {
+        height: 70%;
+        width: 70%;
     }
 }
 
