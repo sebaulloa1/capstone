@@ -1,0 +1,5 @@
+Requests (https://requests.readthedocs.io/en/master/user/install/#install) for the external API calls
+$ python -m pip install requests
+
+Pyhton Social Auth (https://python-social-auth.readthedocs.io/en/latest/installing.html) for the google auth log in
+$ pip install social-auth-django

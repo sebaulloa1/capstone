@@ -1,0 +1,16 @@
+Hello, my name is Sebastian and this is my final project. I called it 'Profiler' having in mind the idea of making a platform
+for anyone to make an every-day tracker healthwise. Personally, I've always needed some way of logging everything I eat. From
+depression to weight problems, what I eat has always affected me noticeably. Basically what I made as my project is that, a
+platform where under your profile you keep track of what you've eaten, and how much. Using the FatSecret API, a mobile app,
+website and API with nutrition details of thousands of foods or ingredients. Also I used the Canvas JS API to make a chart to
+make the representation of the daily nutrition more visually readble than just numbers.
+
+After your first login, using a social authentification or just creating an account, you are asked to enter your macros daily goals,
+being the total ammount of calories, protein, carbohydrates and fat you want or need to consume in a day. Then the main page is 
+the details of the current day your visiting the app, where you can register and check the nutrition values of everything you ate
+that day and check how close you are to your daily goals. Theres a calendar where you can click on any day of any year and log the
+meals you ate under that date. Then calendar also has a percentage indicator of how close to your goals you got that day. Then in 
+the account tab you can change your daily goals and your password.
+
+Using the django web framework I made a model for the user, breakfasts, lunches, dinners, snacks and goals. Every model linked to
+a user with a foreign key, except the goals that has a OneToOne field. 

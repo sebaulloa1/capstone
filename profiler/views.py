@@ -73,8 +73,8 @@ def register(request):
             user.save()
         except IntegrityError:
             return render(request, "profiler/register.html")
-        login(request, user)
-        return HttpResponseRedirect(reverse("today"))
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return HttpResponseRedirect(reverse("set_goal"))
     else:
         return render(request, "profiler/register.html")
 
@@ -131,53 +131,44 @@ def calendar_details(request):
 @login_required(login_url='/login', redirect_field_name=None)
 def day(request, date):
     iso_date = datetime.datetime.fromtimestamp(date)
+    user = request.user
     print(iso_date)
     calendar = Calendar.objects.get_or_create(day=iso_date, user=request.user)
-    print(calendar[0].protein, lineno())
+    breakfast = Breakfast.objects.filter(user=user, date=iso_date)
+    lunch = Lunch.objects.filter(user=user, date=iso_date)
+    dinner = Dinner.objects.filter(user=user, date=iso_date)
+    snack = Snack.objects.filter(user=user, date=iso_date)
+    print(breakfast[0], lineno())
     return render(request, "profiler/day.html", {
         "date": iso_date,
         "calendar": calendar[0],
-        "today": False
+        "today": False,
+        "breakfast": breakfast,
+        "lunch": lunch,
+        "dinner": dinner,
+        "snack": snack
     })
 
 @login_required(login_url='/login', redirect_field_name=None)
 def today(request):
     date = datetime.datetime.today()
+    user = request.user
     print(date, lineno())
-    calendar = Calendar.objects.get_or_create(day=date, user=request.user)
+    calendar = Calendar.objects.get_or_create(day=date, user=user)
+    breakfast = Breakfast.objects.filter(user=user, date=date)
+    lunch = Lunch.objects.filter(user=user, date=date)
+    dinner = Dinner.objects.filter(user=user, date=date)
+    snack = Snack.objects.filter(user=user, date=date)
     print(calendar)
     return render(request, "profiler/day.html", {
         "date": date,
         "calendar": calendar[0],
-        "today": True
+        "today": True,
+        "breakfast": breakfast,
+        "lunch": lunch,
+        "dinner": dinner,
+        "snack": snack
     })
-
-@csrf_exempt
-def new_meal(request): #not used?
-    if request.method == "POST":
-        data = json.loads(request.body)
-        meal_time = data['meal_time'].capitalize()
-        date = datetime.datetime.fromisoformat(data['date'])
-        print(data)
-        #for ingredient in data['meal']:
-        #    meal = globals()[meal_time](date=date.strftime('%Y-%m-%d'), ingredient=ingredient['name'], measure=ingredient['measure'], quantity=ingredient['qty'])
-         #   meal.save()
-            #print(ingredient)
-        
-        params = {'app_id': 'e572f575', 'app_key': '5e459acdcb817d770ab8212e966bdfb6'}
-        for ingredient in data['meal']:
-            food = {'ingredients': [{'quantity': int(ingredient['qty']), 'measure': ingredient['measure'], 'foodId': ingredient['id']}]}
-            print(food)
-            r = requests.post('https://api.edamam.com/api/food-database/v2/nutrients', params=params, json=food)
-            print(r.json())
-       
-        return HttpResponse()
-
-
-def test(request):
-    return render(request, 'profiler/test.html')
-
-
 
 @csrf_exempt
 def fatSecretSearch(request, food_name, page_num):
@@ -251,7 +242,6 @@ def updateCalendar(meal, user):
 
 
 def getCalendar(request, date):
-    
     date = datetime.date.fromtimestamp(date)
     print(date)
     calendar = list(Calendar.objects.filter(day=date, user=request.user).values())
@@ -264,14 +254,11 @@ def getCalendar(request, date):
 
 def set_goal(request):
     if request.method == "GET":
-        return render(request, "profiler/set_goal.html")
-        """
         try:
             Goal.objects.get(user=request.user)
             return HttpResponseRedirect(reverse("today"))
         except ObjectDoesNotExist:
             return render(request, "profiler/set_goal.html")
-        """
     else:
         goal = Goal(user = request.user, calories=request.POST["calories"], protein=request.POST["protein"], fat=request.POST["fat"], carbs=request.POST["carbs"])
         goal.save()

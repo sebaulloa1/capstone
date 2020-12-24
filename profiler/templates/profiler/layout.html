@@ -5,6 +5,7 @@
         <title>Profiler</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
+        <link rel="shortcut icon" href="{% static 'profiler/apple-favicon.ico' %}"/>
         <link href="{% static 'profiler/layout.css' %}" rel="stylesheet">
         <script src="https://kit.fontawesome.com/498d15032c.js" crossorigin="anonymous"></script>
         <link href="{% static 'profiler/calendar_style.css' %}" rel="stylesheet">
@@ -19,7 +20,9 @@
                 {% endblock %}
             </main>
             <sidebar>
-                <div class="logo"></div>
+                <div class="logo">
+                    <img src="{% static 'profiler/apple-icon.png' %}">
+                </div>
                 <div class="avatar">
                 <div class="avatar__img">
                     <i class="fas fa-user-circle"></i>

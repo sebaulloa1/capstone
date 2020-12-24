@@ -41,10 +41,10 @@
     </div>
 
     <div class="macros-tb">
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Calories: {{ calendar.calories }}</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Protein: {{ calendar.protein }}</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Fat: {{ calendar.fat }}</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: {{ calendar.carbs }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Calories: {{ calendar.calories|floatformat:"0" }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Protein: {{ calendar.protein|floatformat:"0" }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Fat: {{ calendar.fat|floatformat:"0" }}</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: {{ calendar.carbs|floatformat:"0" }}</div>
     </div>
     <div style="display: none;" id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
     <div class="btn-container">   
@@ -67,8 +67,101 @@
         </div>
     </div>
 
+    <div class="chart-container">
+        <div id="chartContainer" class="fatsecret-chart"></div>
+        <div class="food-list-container">
+            <div class="food-list-btns">
+                <button class="tablink" onclick="openPage('breakfast', this, 'red')" id="defaultOpen">Breakfast</button>
+                <button class="tablink" onclick="openPage('lunch', this, 'green')">Lunch</button>
+                <button class="tablink" onclick="openPage('dinner', this, 'blue')">Dinner</button>
+                <button class="tablink" onclick="openPage('snack', this, 'orange')">Snacks</button>
+                <button class="tablink" onclick="openPage('all', this, 'violet')">All</button>
+            </div>
+            <div id="breakfast" class="tabcontent">
+                {% if breakfast %}
+                    {% for food in breakfast %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <span>No data</span>
+                {% endif %}
+            </div>
+            <div id="lunch" class="tabcontent">
+                {% if lunch %}
+                    {% for food in lunch %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <span>No data</span>
+                {% endif %}
+            </div>
+            <div id="dinner" class="tabcontent">
+                {% if dinner %}
+                    {% for food in dinner %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <span>No data</span>
+                {% endif %}
+            </div>
+            <div id="snack" class="tabcontent">
+                {% if snack %}
+                    {% for food in snack %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <span>No data</span>
+                {% endif %}
+            </div>
+            <div id="all" class="tabcontent">
+                {% if breakfast %}
+                    {% for food in breakfast %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if lunch %}
+                    {% for food in lunch %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if dinner %}
+                    {% for food in dinner %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if snack %}
+                    {% for food in snack %}
+                    <div>
+                        <span>{{ food.ingredient }}</span><span>({{ food.quantity }} x {{ food.quantity }}</span><br>
+                        <span>{{ food.calories }} | {{ food.protein }} | {{ food.fat }} | {{ food.carbs }}</span> 
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
     
-    <div id="chartContainer" class="fatsecret-chart"></div>
     <!-- <script src="https://platform.fatsecret.com/js?key=8afd07b7355c41e3813a80e3008c127e&auto_load=true"></script> -->
 {% endblock %}
 {% block script %}
