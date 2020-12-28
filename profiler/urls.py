@@ -12,6 +12,7 @@ urlpatterns = [
     path("save_meal", views.saveNewMeal, name="saveNewMeal"),
     path("get_calendar/<int:date>", views.getCalendar, name="get_calendar"),
     path("account", views.account, name="account"),
+    path("food_list", views.food_list, name="food_list"),
 
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),

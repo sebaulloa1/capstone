@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    renderChart();  
+    renderChart(); 
+    document.getElementById("defaultOpen").click();
+    document.getElementById("defaultOpen").focus();
     document.querySelectorAll('.add-meal-btn').forEach(function(btn) {
         let meal = btn.dataset.meals
         btn.addEventListener('click', () => {addMealStart(meal)})
@@ -333,7 +335,7 @@ function addNewFood(json, serving, quantity) {
     let new_meal = {
         'name': `${food['food_name']} ${food.hasOwnProperty('brand_name')?food['brand_name']:''}`,
         'measurement_description': food_serving['measurement_description'],
-        'number_of_units': food_serving['number_of_units'],
+        'number_of_units': quantity,
         'metric_serving_amount': food_serving['metric_serving_amount'],
         'metric_serving_unit': food_serving['metric_serving_unit'],
         'calories': food_serving['calories'] * quantity,
@@ -503,26 +505,84 @@ function renderChart() {
     
 }
 
-function openPage(pageName, elmnt, color) {
-    // Hide all elements with class="tabcontent" by default */
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-  
-    // Remove the background color of all tablinks/buttons
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].style.backgroundColor = "";
-    }
-  
-    // Show the specific tab content
-    document.getElementById(pageName).style.display = "block";
-  
-    // Add the specific color to the button used to open the tab content
-    elmnt.style.backgroundColor = color;
+function openTab(meal, color, page_num) {
+    let get_date = document.querySelector('#date').dataset.timestamp;
+    get_date = new Date(get_date);
+    console.log(get_date)
+    let date = new Date(get_date.getFullYear(), get_date.getMonth(), get_date.getDate()).getTime() / 1000;
+    fetch('/food_list', {
+        method: "POST",
+        body: JSON.stringify({
+            date: date,
+            meal: meal,
+            page_num: page_num
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        let tab = document.querySelector(`#${meal}`);
+        tab.innerHTML = '';
+        let foods = result['meal_paginator'];
+        if (foods.length == 0) {
+            tab.innerHTML = 'No data';
+        } else {
+            let food_list = '';
+            for (food of foods) {
+                console.log(food_list)
+                food_list += `
+                    <div class="food-list-item">
+                        <span class="food-list-ingredient">${food.ingredient}</span><span class="food-list-measure">(${Math.trunc(food.quantity)} x ${food.measure})</span><br>
+                        <span class="food-list-macros">Calories: ${Math.round(food.calories)}kcal | Protein: ${Math.round(food.protein)}g | Fat: ${Math.round(food.fat)}g | Carbs: ${Math.round(food.carbs)}g</span>
+                    </div>
+                `;
+            }
+            tab.insertAdjacentHTML('afterbegin', food_list);
+            let num_pages = result['num_pages'];
+            console.log(num_pages)
+            if (num_pages > 1) {
+                let tab_btns = `<div class="tab-btns">`
+                for (i = 1; i <= num_pages; i++) {
+                    if (i == page_num) {
+                        tab_btns += `
+                            <button disabled>${i}</button>
+                        `;
+                    } else {
+                    tab_btns += `
+                        <button onclick="openTab('${meal}', 'red', ${i})" class="tab-btn">${i}</button>
+                        `; 
+                    }
+                }
+                tab_btns += `</div>`
+                tab.insertAdjacentHTML('beforeend', tab_btns);
+            };
+            console.log(tab)
+        }
+        
+        
+        // Hide all elements with class="tabcontent" by default */
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        
+        for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        }
+    
+        // Remove the background color of all tablinks/buttons
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+        }
+    
+        // Show the specific tab content
+        document.getElementById(meal).style.display = "block";
+    
+        // Add the specific color to the button used to open the tab content
+        //elmnt.style.backgroundColor = color;
+    })
+    
   }
   
   // Get the element with id="defaultOpen" and click on it
-  document.getElementById("defaultOpen").click();
+  //document.getElementById("defaultOpen").click();
+  //document.getElementById("defaultOpen").focus();

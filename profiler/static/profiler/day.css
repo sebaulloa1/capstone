@@ -362,24 +362,38 @@ a.serving-selected, .selected{
     height: auto;
     position: relative;
     float: left;
+    height: 400px;
 }
 
 @media (max-width: 850px) {
     .fatsecret-chart {
         width: 100%;
     }
+    
+    .food-list-container {
+        width: 100% !important;
+    }
 }
 
 .chart-container {
     width: 100%;
     display: table;
+    float: left;
 }
 
 .food-list-container {
-    width: 40%;
+    width: 38%; 
     display: block;
     position: relative;
     float: left;
+    height: 400px;
+    margin-left: 2%;
+}
+
+.food-list-btns {
+    margin-bottom: 2px;
+    text-align: center;
+    width: 100%;
 }
 
 .tablink {
@@ -388,21 +402,53 @@ a.serving-selected, .selected{
     float: left;
     border: none;
     outline: none;
+    
     cursor: pointer;
-    padding: 14px 16px;
+    padding: 10px 7px;
+    text-align: center;
     font-size: 17px;
-    width: 25%;
+    width: auto;
 }
 
 .tabcontent {
     color: white;
     display: none;
-    padding: 100px 20px;
-    height: 100%;
+    padding: 20px;
+    height: 320px;
+    background-color: var(--red);
 }
 
-#breakfast {background-color: red;}
-#lunch {background-color: green;}
-#dinner {background-color: blue;}
-#snack {background-color: orange;}
-#all {background-color: violet;}
+.food-list-item {
+    width: 100%;
+    border-bottom: 1px solid #d8ecd8;
+    padding-bottom: 5px;
+    padding-top: 3px;
+}
+
+.food-list-item span{
+    font-size: 13px;
+    font-weight: 200;
+}
+
+.food-list-ingredient {
+    font-weight: 500 !important;
+}
+
+.tab-btns {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+}
+
+.tab-btns button {
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+.tab-btns button:disabled {
+    background-color: var(--red2);
+    border-radius: 50%;
+}

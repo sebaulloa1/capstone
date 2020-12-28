@@ -13,6 +13,8 @@ from django.core import serializers
 from django.forms.models import model_to_dict
 from calendar import monthrange
 import inspect
+from django.core.paginator import Paginator, EmptyPage
+from itertools import chain
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -286,3 +288,33 @@ def account(request):
         return JsonResponse({
             "goals": model_to_dict(goals)
         })
+
+@csrf_exempt
+def food_list(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        date = datetime.date.fromtimestamp(data['date'])
+        user = request.user
+        page_num = data['page_num']
+        meal = data['meal']
+        if meal == 'all':
+            breakfast = list(Breakfast.objects.filter(user=user, date=date).values())
+            lunch = list(Lunch.objects.filter(user=user, date=date).values())
+            dinner = list(Dinner.objects.filter(user=user, date=date).values())
+            snack = list(Snack.objects.filter(user=user, date=date).values())
+            meal_set = list(chain(breakfast, lunch, dinner, snack))
+            
+        else:
+            meal_set = list(globals()[meal.lower().capitalize()].objects.filter(date=date, user= user).order_by('pk').values())
+        meal_paginator = Paginator(meal_set, 6)
+        try:
+            food_list = meal_paginator.page(page_num)
+        except EmptyPage:
+            food_list = meal_paginator.page(meal_paginator.num_pages)
+        print(meal_set, lineno())
+
+        return JsonResponse({
+            "meal_paginator": list(food_list),
+            "num_pages": meal_paginator.num_pages
+        }, safe=False)
+        
