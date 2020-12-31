@@ -13,10 +13,17 @@ body {
     background: #fff;
 }
 
+:root {
+    --red: rgb(240, 85, 85);
+    --red2: rgb(200, 70, 70);
+    --red3: rgb(150, 80, 80);
+}
+
 .form {
     font-family: "Poppins", sans-serif;
     width: 320px;
     text-align: center;
+    margin-top: 20px;
 }
 
 .form h2 {
@@ -95,6 +102,9 @@ body {
 @media screen and (max-width: 500px) {
     .form {
       width: 95%;
+      margin-top: 70px;
+      position: absolute;
+      top: 0;
     }
   
     .form .form-input {
@@ -113,4 +123,48 @@ body {
 
 .google-login img:hover {
     transform: translate(0, -5px);
+}
+
+.logo {
+    width: 40%;
+    z-index: -1;
+    position: absolute;
+    top: -50px;
+    left: -10px;
+}
+
+@media screen and (max-width: 500px) {
+    .logo {
+        top: -15px;
+        width: 50%;
+    }
+}
+
+.messages {
+    background-color: var(--red);
+    color: white;
+    padding: 20px 40px;
+    position: absolute;
+    top: 20px;
+    right: 10%;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 350px;
+    border-radius: 3px;
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+
+.closebtn:hover {
+    color: black;
 }

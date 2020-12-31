@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     renderChart(); 
-    document.getElementById("defaultOpen").click();
-    document.getElementById("defaultOpen").focus();
+    document.getElementById("tabOpen").click();
     document.querySelectorAll('.add-meal-btn').forEach(function(btn) {
         let meal = btn.dataset.meals
         btn.addEventListener('click', () => {addMealStart(meal)})
@@ -47,6 +46,9 @@ function fatSecret(page_num) {
             alert('Invalid IP')
             return
         }
+        if (document.querySelector('#foods-search')) {
+            document.querySelector('#foods-search').remove()
+        }
         const food_search_container = document.querySelector('#food-search-container');
         const food_search_results = document.createElement('div');
         food_search_results.id = 'foods-search';
@@ -80,7 +82,7 @@ function fatSecret(page_num) {
             let table_row = `
                 <tr>
                     <td colspan="2" class="table-bottom-border table-food-option">
-                        <a href="javascript:void(0)" onclick="foodSearch(${food.food_id},'${food_name}',${page_num}, 0);">${food.food_name} ${food.hasOwnProperty('brand_name') ? '(' + food.brand_name + ')' : ''}</a>
+                        <a class="food-option" href="javascript:void(0)" onclick="foodSearch(${food.food_id},'${food_name}',${page_num}, 0);">${food.food_name} ${food.hasOwnProperty('brand_name') ? '(' + food.brand_name + ')' : ''}</a>
                         <div>${food.food_description}</div>
                     </td>
                 </tr>
@@ -99,6 +101,7 @@ function fatSecret(page_num) {
             </td>
         `;
         table_body.insertAdjacentElement("beforeend", pages_btns);
+        document.querySelector('.food-option').focus();
         return false
     })
     
@@ -356,6 +359,7 @@ function addNewFood(json, serving, quantity) {
     console.log(new_meal);
     new_meal_dict[food['food_id']] = new_meal;
     console.log(new_meal_dict)
+    document.querySelector('#save-new-meal').focus();
 }
 
 function saveMeal() {
@@ -375,6 +379,7 @@ function saveMeal() {
         renderChart();
         let foods_search = document.querySelector('#foods-search');
         foods_search.remove();
+        openTab('all', 1, document.querySelector('.all'))
     })
 }
 
@@ -505,7 +510,7 @@ function renderChart() {
     
 }
 
-function openTab(meal, color, page_num) {
+function openTab(meal, page_num, elmnt) {
     let get_date = document.querySelector('#date').dataset.timestamp;
     get_date = new Date(get_date);
     console.log(get_date)
@@ -521,11 +526,18 @@ function openTab(meal, color, page_num) {
     .then(response => response.json())
     .then(result => {
         console.log(result)
+        
+        if (elmnt) {
+            let prev_open = document.querySelector('#tabOpen');
+            prev_open.removeAttribute('id');
+            console.log(elmnt)
+            elmnt.id = 'tabOpen';
+        };
         let tab = document.querySelector(`#${meal}`);
         tab.innerHTML = '';
         let foods = result['meal_paginator'];
         if (foods.length == 0) {
-            tab.innerHTML = 'No data';
+            tab.innerHTML = '<span class="no-data">Any new meal saved will be displayed here</span>';
         } else {
             let food_list = '';
             for (food of foods) {
@@ -549,7 +561,7 @@ function openTab(meal, color, page_num) {
                         `;
                     } else {
                     tab_btns += `
-                        <button onclick="openTab('${meal}', 'red', ${i})" class="tab-btn">${i}</button>
+                        <button onclick="openTab('${meal}', 'red', ${i}, false)" class="tab-btn">${i}</button>
                         `; 
                     }
                 }

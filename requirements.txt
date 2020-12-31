@@ -1,5 +1,12 @@
-Requests (https://requests.readthedocs.io/en/master/user/install/#install) for the external API calls
+'Requests' (https://requests.readthedocs.io/en/master/user/install/#install) for the external API calls
 $ python -m pip install requests
 
-Pyhton Social Auth (https://python-social-auth.readthedocs.io/en/latest/installing.html) for the google auth log in
+'Pyhton Social Auth' (https://python-social-auth.readthedocs.io/en/latest/installing.html) for the google auth log in
 $ pip install social-auth-django
+
+'To run the application first you need to set-up the Fat Secret API, the food and nutrition database. They use an OAuth 2.0 protocol for
+the requests. Create an account at https://platform.fatsecret.com/api/ and apply for a developer/basic plan. 
+The steps can be found here https://platform.fatsecret.com/api/Default.aspx?screen=rapiauth2. The request url is already set up using requests.
+In short, create a project in your new account for the Rest API to get your Client ID and Client Secret and type them in the get_token() function
+in views.py. Also add your IP to the list is the dashboard of your "project" in the FatSecret API website. I had problems sometimes where 
+the API would not recognize my IP, but after waiting a few minutes it would work fine. That should do it.'

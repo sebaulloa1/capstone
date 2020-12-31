@@ -10,6 +10,14 @@
         <script src="https://kit.fontawesome.com/498d15032c.js" crossorigin="anonymous"></script>
     </head>
     <body>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} </li><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <img class="logo" src="{% static 'profiler/apple-icon.png' %}">
         <form class="form" action="{% url 'login' %}" method="post">
             {% csrf_token %}
             <i class="fas fa-user-circle"></i>

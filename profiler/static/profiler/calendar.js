@@ -7,7 +7,8 @@ function renderCalendar() {
     // Gets the last day of the previous month
     const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
     // Gets the index of the first day of the current month, being 0 for Sunday
-    const firstDayIndex  = date.getDay();
+    //const firstDayIndex  = date.getDay();
+    const firstDayIndex = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
     // Gets the index of the last day of the current month
     const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
     // Gets the ammount of next days for the last week displayed

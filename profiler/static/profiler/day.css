@@ -26,7 +26,22 @@ div {
     letter-spacing: 3px;
     position: relative;
     padding: 0 40px;
+}
 
+@media screen and (max-width: 850px) {
+    .day-date {
+        height: auto;
+    }
+    .day-date div {
+        font-size: 22px;
+        letter-spacing: 1px;
+        padding: 10px 10px;
+    }
+}
+
+.add-meal-btn-container {
+    display: flex;
+    width: 100%;
 }
 
 .add-meal-btn {
@@ -41,6 +56,9 @@ div {
     border-radius: 3px;
     background-color: transparent;
     margin-right: 10px;
+    flex-grow: 1;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
 
 .add-meal-btn:hover {
@@ -96,10 +114,6 @@ transform: translate(0, 0.375em);
     transform: translate3d(0, 0, -1em);
     box-shadow: 0 0 0 2px blue, 0 0.25em 0 0 var(--red3);
 }*/
-
-.btn-container {
-    width: auto;
-}
 
 .macros-tb {
     width: 100%;
@@ -182,6 +196,23 @@ transform: translate(0, 0.375em);
     cursor: pointer;
     text-align: center;
     background-color: #505050;
+}
+
+@media (max-width: 850px) {
+    .add-meal-container {
+        width: 100%;
+        margin-top: 0;
+    }
+    #food-search-container {
+        width: 100%;
+    }
+    .new-meal-list-container {
+        width: 100%;
+        text-align: center;
+    }
+    .macros-ti {
+        letter-spacing: 1px;
+    }
 }
 
 .table-food-option {
@@ -359,6 +390,7 @@ a.serving-selected, .selected{
 .fatsecret-chart {
     width: 60%;
     margin-top: 30px;
+    margin-bottom: 30px;
     height: auto;
     position: relative;
     float: left;
@@ -368,10 +400,17 @@ a.serving-selected, .selected{
 @media (max-width: 850px) {
     .fatsecret-chart {
         width: 100%;
+        max-height: 350px;
     }
-    
     .food-list-container {
         width: 100% !important;
+        margin: 0 !important;
+    }
+    .tabcontent {
+        max-height: 380px !important; 
+    }
+    #nutrition-panel {
+        font-size: 12px;
     }
 }
 
@@ -386,35 +425,45 @@ a.serving-selected, .selected{
     display: block;
     position: relative;
     float: left;
-    height: 400px;
+    height: 442px;
     margin-left: 2%;
 }
 
 .food-list-btns {
     margin-bottom: 2px;
-    text-align: center;
     width: 100%;
+    display: flex;
+    height: 40px;
+}
+
+#tabOpen {
+    transform: translate(0, 3px);
+    background-color: var(--red);
+    border: none;
 }
 
 .tablink {
     background-color: #555;
     color: white;
     float: left;
-    border: none;
     outline: none;
-    
     cursor: pointer;
-    padding: 10px 7px;
+    padding: 0 7px;
+    height: 40px;
     text-align: center;
-    font-size: 17px;
+    font-size: 14px;
     width: auto;
+    border: 1px solid #d8ecd8;
+    box-sizing: border-box;
+    flex-grow: 1;
+    transition-duration: 1s;
 }
 
 .tabcontent {
     color: white;
     display: none;
-    padding: 20px;
-    height: 320px;
+    padding: 10px 20px 20px 20px;
+    height: 370px;
     background-color: var(--red);
 }
 
@@ -439,7 +488,7 @@ a.serving-selected, .selected{
     text-align: center;
     font-size: 12px;
     position: absolute;
-    bottom: 10px;
+    bottom: 15px;
     right: 0;
 }
 
@@ -451,4 +500,13 @@ a.serving-selected, .selected{
 .tab-btns button:disabled {
     background-color: var(--red2);
     border-radius: 50%;
+}
+
+.no-data {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
 }

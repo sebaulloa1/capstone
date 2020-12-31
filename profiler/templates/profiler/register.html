@@ -10,29 +10,27 @@
     </head>
     <body>
         
-        
-        
-       
+        <img class="logo" src="{% static 'profiler/apple-icon.png' %}">
 
-    <form class="form" action="{% url 'register' %}" method="post">
-        <h2>Sign in</h2>
-        {% csrf_token %}
-        <label for="username">Username</label>
-        <input class="form-input" autofocus type="text" name="username" placeholder="Username">
-        <label for="email">Email</label>
-        <input class="form-input" type="email" name="email" placeholder="Email Address">
-        <label for="password">Password</label>
-        <input class="form-input" type="password" name="password" placeholder="Password">
-        <label for="confirmation">Confirm password</label>
-        <input class="form-input" type="password" name="confirmation" placeholder="Confirm Password">
-    
-        <input class="btn" type="submit" value="Register">
-        <div class="options">
-            <span>Already have an account? </span><a href="{% url 'login' %}">Log In here.</a>
-        </div>
-    </form>
+        <form class="form" action="{% url 'register' %}" method="post">
+            <h2>Sign in</h2>
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input class="form-input" autofocus type="text" name="username" placeholder="Username">
+            <label for="email">Email</label>
+            <input class="form-input" type="email" name="email" placeholder="Email Address">
+            <label for="password">Password</label>
+            <input class="form-input" type="password" name="password" placeholder="Password">
+            <label for="confirmation">Confirm password</label>
+            <input class="form-input" type="password" name="confirmation" placeholder="Confirm Password">
+        
+            <input class="btn" type="submit" value="Register">
+            <div class="options">
+                <span>Already have an account? </span><a href="{% url 'login' %}">Log In here.</a>
+            </div>
+        </form>
 
-    
+        
 
     </body>
 </html>

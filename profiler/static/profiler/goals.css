@@ -83,15 +83,38 @@ h2 {
 }
 
 @media screen and (max-width: 500px) {
+    .goals-container {
+        text-align: center;
+        width: 100%;
+    }
     .form {
-      width: 95%;
+      width: 100%;
     }
   
     .form .form-input {
-      width: 100%
+      width: 70px;
+      margin-left: 15px;
     }
   
     .form .btn {
-      width: 100%;
+      width: 70%;
     }
+    .input-container {
+        margin: 0;
+        width: 70%;
+        text-align: right;
+    }
+    .logo {
+        top: 0 !important;
+        left: 0 !important;
+    }
+}
+
+
+.logo {
+    width: 40%;
+    z-index: -1;
+    position: absolute;
+    top: -50px;
+    left: -10px;
 }

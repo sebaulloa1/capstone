@@ -22,7 +22,7 @@
     </a>
     <a class="menu__item menu__item--active" href="javascript: void(0)">
         <i class="menu__icon fas fa-bookmark"></i>
-        <span class="menu__text">{{ date | date:"l j / f / Y" }}</span>
+        <span class="menu__text">{{ date | date:"l f / j" }}</span>
     </a>
     <a class="menu__item" href="{% url 'calendar' %}">
         <i class="menu__icon fas fa-calendar"></i>
@@ -47,7 +47,7 @@
         <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: {{ calendar.carbs|floatformat:"0" }}g</div>
     </div>
     <div style="display: none;" id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
-    <div class="btn-container">   
+    <div class="add-meal-btn-container">   
         <button class="add-meal-btn" data-meals="breakfast">Add a breakfast</button>
         <button class="add-meal-btn" data-meals="lunch">Add a lunch</button>
         <button class="add-meal-btn" data-meals="dinner">Add a dinner</button>
@@ -71,11 +71,11 @@
         <div id="chartContainer" class="fatsecret-chart"></div>
         <div class="food-list-container">
             <div class="food-list-btns">
-                <button class="tablink" onclick="openTab('breakfast', 'red', 1)" id="defaultOpen">Breakfast</button>
-                <button class="tablink" onclick="openTab('lunch', 'green', 1)">Lunch</button>
-                <button class="tablink" onclick="openTab('dinner', 'blue', 1)">Dinner</button>
-                <button class="tablink" onclick="openTab('snack', 'orange', 1)">Snacks</button>
-                <button class="tablink" onclick="openTab('all', 'violet', 1)">All</button>
+                <button class="tablink" onclick="openTab('breakfast', 1, this)" id="tabOpen">Breakfast</button>
+                <button class="tablink" onclick="openTab('lunch', 1, this)">Lunch</button>
+                <button class="tablink" onclick="openTab('dinner', 1, this)">Dinner</button>
+                <button class="tablink" onclick="openTab('snack', 1, this)">Snacks</button>
+                <button class="tablink all" onclick="openTab('all', 1, this)">All</button>
             </div>
             <div id="breakfast" class="tabcontent">
             </div>

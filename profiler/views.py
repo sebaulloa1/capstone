@@ -15,6 +15,7 @@ from calendar import monthrange
 import inspect
 from django.core.paginator import Paginator, EmptyPage
 from itertools import chain
+from django.contrib import messages
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -50,6 +51,7 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("today"))
         else:
+            messages.add_message(request, messages.ERROR, 'Wrong username or password')
             return render(request, "profiler/login.html")
     else:
         return render(request, "profiler/login.html")
@@ -67,6 +69,7 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
+            messages.add_message(request, messages.ERROR, "Password and confirmation don't match")
             return render(request, "profiler/register.html")
 
         # Attempt to create new user
@@ -74,6 +77,7 @@ def register(request):
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
+            messages.add_message(request, messages.ERROR, "Error creating new user")
             return render(request, "profiler/register.html")
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return HttpResponseRedirect(reverse("set_goal"))
