@@ -373,13 +373,19 @@ function saveMeal() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
-        new_meal_dict = {};
         alert('Meal saved succesfully')
-        document.querySelector('.new-meal-list').innerHTML = '';
+        let new_meal_list = document.querySelector('.new-meal-list');
+        new_meal_list.innerHTML = '';
         renderChart();
         let foods_search = document.querySelector('#foods-search');
         foods_search.remove();
-        openTab('all', 1, document.querySelector('.all'))
+        openTab('all', 1, document.querySelector('.all'));
+        document.querySelector('.calories-ti').innerHTML = Math.round(result[0]['calories']);
+        document.querySelector('.protein-ti').innerHTML = Math.round(result[0]['protein']);
+        document.querySelector('.fat-ti').innerHTML = Math.round(result[0]['fat']);
+        document.querySelector('.carbs-ti').innerHTML = Math.round(result[0]['carbs']);
+        document.querySelector('.add-meal-container').style.display = 'none';
+        new_meal_dict = {};
     })
 }
 
@@ -561,7 +567,7 @@ function openTab(meal, page_num, elmnt) {
                         `;
                     } else {
                     tab_btns += `
-                        <button onclick="openTab('${meal}', 'red', ${i}, false)" class="tab-btn">${i}</button>
+                        <button onclick="openTab('${meal}', ${i}, false)" class="tab-btn">${i}</button>
                         `; 
                     }
                 }
@@ -587,7 +593,7 @@ function openTab(meal, page_num, elmnt) {
         }
     
         // Show the specific tab content
-        document.getElementById(meal).style.display = "block";
+        document.getElementById(meal).style.display = "table";
     
         // Add the specific color to the button used to open the tab content
         //elmnt.style.backgroundColor = color;

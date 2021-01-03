@@ -41,10 +41,10 @@
     </div>
 
     <div class="macros-tb">
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Calories: {{ calendar.calories|floatformat:"0" }}kcal</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Protein: {{ calendar.protein|floatformat:"0" }}g</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Fat: {{ calendar.fat|floatformat:"0" }}g</div>
-        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: {{ calendar.carbs|floatformat:"0" }}g</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Calories: <span class="calories-ti">{{ calendar.calories|floatformat:"0" }}</span>kcal</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Protein: <span class="protein-ti">{{ calendar.protein|floatformat:"0" }}</span><span class="calories-ti">g</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Fat: <span class="fat-ti">{{ calendar.fat|floatformat:"0" }}</span>g</div>
+        <div class="macros-ti"><i class="macros-dot fas fa-circle"></i>Carbs: <span class="carbs-ti">{{ calendar.carbs|floatformat:"0" }}</span>g</div>
     </div>
     <div style="display: none;" id="date" data-timestamp="{{ date.isoformat }}">{{ date.isoformat }}</div>
     <div class="add-meal-btn-container">   

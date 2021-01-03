@@ -159,6 +159,10 @@ transform: translate(0, 0.375em);
     position: relative;
 }
 
+.new-meal-list li {
+    margin-top: 3px;
+}
+
 .meal-list-details {
     font-size: 1.2rem;
 }
@@ -196,6 +200,11 @@ transform: translate(0, 0.375em);
     cursor: pointer;
     text-align: center;
     background-color: #505050;
+    outline: none;
+}
+
+#food-search:hover {
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 850px) {
@@ -332,6 +341,7 @@ transform: translate(0, 0.375em);
 .table-bottom-border {
     border-bottom: 1px solid #D8ecf7;
     border-collapse: collapse;
+    padding-bottom: 3px;
 }
 
 .table-nutrient-value {
@@ -376,6 +386,7 @@ a.serving-selected, .selected{
 
 .food-add-container {
     margin-top: 20px;
+    text-align: center;
 }
 
 .food-add-container button {
@@ -383,8 +394,9 @@ a.serving-selected, .selected{
 }
 
 .quantity-input {
-    width: 5rem;
+    width: 4rem;
     margin-right: 10px;
+    text-align: center;
 }
 
 .fatsecret-chart {
@@ -408,6 +420,7 @@ a.serving-selected, .selected{
     }
     .tabcontent {
         max-height: 380px !important; 
+        width: 100%;
     }
     #nutrition-panel {
         font-size: 12px;
@@ -459,12 +472,17 @@ a.serving-selected, .selected{
     transition-duration: 1s;
 }
 
+.tablink:hover:not(#tabOpen) {
+    transform: translate(0, 2px);
+}
+
 .tabcontent {
     color: white;
     display: none;
     padding: 10px 20px 20px 20px;
-    height: 370px;
+    max-height: 370px;
     background-color: var(--red);
+    box-sizing: border-box;
 }
 
 .food-list-item {
@@ -476,7 +494,7 @@ a.serving-selected, .selected{
 
 .food-list-item span{
     font-size: 13px;
-    font-weight: 200;
+    font-weight: 300;
 }
 
 .food-list-ingredient {
@@ -487,19 +505,22 @@ a.serving-selected, .selected{
     width: 100%;
     text-align: center;
     font-size: 12px;
-    position: absolute;
-    bottom: 15px;
+    /*position: absolute;*/
+    margin-top: 10px;
     right: 0;
 }
 
 .tab-btns button {
-    padding: 0 5px;
+    color: black;
+    padding: 4px 8px;
     cursor: pointer;
+    border: 1px solid #ddd;
 }
 
 .tab-btns button:disabled {
     background-color: var(--red2);
-    border-radius: 50%;
+    color: white;
+    border: 1px solid var(--red2);
 }
 
 .no-data {
@@ -509,4 +530,22 @@ a.serving-selected, .selected{
     width: 100%;
     text-align: center;
     margin-top: 15px;
+}
+
+#save-new-meal, #add-new-food {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    border: 3px solid #888888;
+    border-radius: 4px;
+    padding: 5px 20px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #888888;
+    outline: none;
+    margin-top: 2px;
+}
+
+#save-new-meal:hover, #add-new-food:hover {
+    background-color: #505050;
 }

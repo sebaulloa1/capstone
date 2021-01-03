@@ -221,9 +221,8 @@ def saveNewMeal(request):
             new_meal.save()
         updateCalendar(data['meal'], request.user)
         print(next(iter(data['meal'].values())))
-        calendar = Calendar.objects.filter(day=datetime.datetime.fromisoformat(next(iter(data['meal'].values()))['date']), user=request.user)
+        calendar = list(Calendar.objects.filter(day=datetime.datetime.fromisoformat(next(iter(data['meal'].values()))['date']), user=request.user).values())
         print(calendar)
-        calendar = serializers.serialize('json', calendar)
     return JsonResponse(calendar, safe=False)
 
 def updateCalendar(meal, user):
@@ -310,7 +309,7 @@ def food_list(request):
             
         else:
             meal_set = list(globals()[meal.lower().capitalize()].objects.filter(date=date, user= user).order_by('pk').values())
-        meal_paginator = Paginator(meal_set, 6)
+        meal_paginator = Paginator(meal_set, 5)
         try:
             food_list = meal_paginator.page(page_num)
         except EmptyPage:
