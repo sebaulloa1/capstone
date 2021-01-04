@@ -483,6 +483,7 @@ a.serving-selected, .selected{
     max-height: 370px;
     background-color: var(--red);
     box-sizing: border-box;
+    width: 100%;
 }
 
 .food-list-item {

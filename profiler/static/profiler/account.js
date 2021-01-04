@@ -32,10 +32,10 @@ function changeGoal() {
     .then(response => response.json())
     .then(result => {
         console.log(result)
-        document.querySelector('.goal-calories').innerHTML = result['goals']['calories'];
-        document.querySelector('.goal-protein').innerHTML = result['goals']['protein'];
-        document.querySelector('.goal-fat').innerHTML = result['goals']['fat'];
-        document.querySelector('.goal-carbs').innerHTML = result['goals']['carbs'];
+        document.querySelector('#calories').value = result['goals']['calories'];
+        document.querySelector('#protein').value = result['goals']['protein'];
+        document.querySelector('#fat').value = result['goals']['fat'];
+        document.querySelector('#carbs').value = result['goals']['carbs'];
         alert('Goals changed succesfully')
     })
     console.log(goals);

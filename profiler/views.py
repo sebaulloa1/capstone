@@ -144,7 +144,6 @@ def day(request, date):
     lunch = Lunch.objects.filter(user=user, date=iso_date)
     dinner = Dinner.objects.filter(user=user, date=iso_date)
     snack = Snack.objects.filter(user=user, date=iso_date)
-    print(breakfast[0], lineno())
     return render(request, "profiler/day.html", {
         "date": iso_date,
         "calendar": calendar[0],

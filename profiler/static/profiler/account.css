@@ -95,6 +95,14 @@
     border-color: var(--red);
 }
 
+.measure {
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.8;
+    padding-left: 5px;
+    z-index: -1;
+}
+
 @media (max-width: 849px) {
     .input-container label {
         font-size: 15px;
