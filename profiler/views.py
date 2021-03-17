@@ -28,8 +28,8 @@ def lineno():
 
 def get_token():
     data = {"grant_type": "client_credentials", "scope": "basic"}
-    clientID = '8afd07b7355c41e3813a80e3008c127e'
-    clientSecret = 'b17853e36e824b26aa0c18867e114d45'
+    clientID = '' # FATSECRET CLIENT ID
+    clientSecret = '' # FATSECRET CLIENT SECRET
     r = requests.post('https://oauth.fatsecret.com/connect/token', data=data, auth=(clientID, clientSecret))
     print(r)
     print(r.json())
